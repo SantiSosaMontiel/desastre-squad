@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Debug - Ladder</title>
+    <link href="styles.css" rel="stylesheet">
+</head>
+<body class="bg-gradient-to-br from-slate-900 via-purple-900 to-slate-900 min-h-screen p-8">
+    <div class="max-w-4xl mx-auto">
+        <h1 class="text-3xl font-bold text-white mb-8">Debug Ladder</h1>
+        
+        <div class="bg-black/20 backdrop-blur-sm rounded-xl border border-white/10 p-6 mb-6">
+            <h2 class="text-xl font-semibold text-white mb-4">Test Elements</h2>
+            <div id="test-content" class="text-white">
+                Loading test content...
+            </div>
+        </div>
+
+        <div class="bg-black/20 backdrop-blur-sm rounded-xl border border-white/10 p-6">
+            <h2 class="text-xl font-semibold text-white mb-4">Console Log</h2>
+            <div id="console-log" class="text-white text-sm font-mono bg-black/50 p-4 rounded-lg max-h-96 overflow-y-auto">
+                <!-- Console output will appear here -->
+            </div>
+        </div>
+    </div>
+
+    <script src="config.js"></script>
+    <script>
+        // Override console.log to show in page
+        const originalLog = console.log;
+        const originalError = console.error;
+        const consoleDiv = document.getElementById('console-log');
+        
+        function addToConsole(message, type = 'log') {
+            const timestamp = new Date().toLocaleTimeString();
+            const color = type === 'error' ? 'text-red-400' : 'text-green-400';
+            consoleDiv.innerHTML += `<div class="${color}">[${timestamp}] ${message}</div>`;
+            consoleDiv.scrollTop = consoleDiv.scrollHeight;
+        }
+        
+        console.log = function(...args) {
+            originalLog.apply(console, args);
+            addToConsole(args.join(' '));
+        };
+        
+        console.error = function(...args) {
+            originalError.apply(console, args);
+            addToConsole(args.join(' '), 'error');
+        };
+
+        // Test basic functionality
+        document.addEventListener('DOMContentLoaded', function() {
+            console.log('Debug page loaded');
+            
+            const testContent = document.getElementById('test-content');
+            testContent.innerHTML = `
+                <div class="text-green-400 mb-4">✅ Page loaded successfully</div>
+                <div class="text-green-400 mb-4">✅ Tailwind CSS loaded</div>
+                <div class="text-green-400 mb-4">✅ JavaScript running</div>
+            `;
+            
+            // Test Supabase connection
+            const supabaseUrl = window.SUPABASE_CONFIG?.url || 'https://aikktkocuuwjysykoqka.supabase.co';
+            const supabaseKey = window.SUPABASE_CONFIG?.key || 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImFpa2t0a29jdXV3anlzeWtvcWthIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTM3NTg1ODQsImV4cCI6MjA2OTMzNDU4NH0.uAD1wUXORCaGqwRjBfNB1Dy4575Y_IelFPWjvX1QPyw';
+            
+            console.log('Testing Supabase connection...');
+            
+            fetch(`${supabaseUrl}/rest/v1/aoe_elos_1v1?player_name=eq.sszafranko`, {
+                headers: {
+                    'apikey': supabaseKey,
+                    'Authorization': `Bearer ${supabaseKey}`
+                }
+            })
+            .then(response => {
+                console.log('Supabase response status:', response.status);
+                return response.json();
+            })
+            .then(data => {
+                console.log('Supabase data:', data);
+                testContent.innerHTML += `<div class="text-green-400 mb-4">✅ Supabase connection working</div>`;
+            })
+            .catch(error => {
+                console.error('Supabase error:', error);
+                testContent.innerHTML += `<div class="text-red-400 mb-4">❌ Supabase error: ${error.message}</div>`;
+            });
+        });
+    </script>
+</body>
+</html> 
