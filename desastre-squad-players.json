@@ -1,0 +1,388 @@
+{
+  "players": [
+    {
+      "name": "sszafranko",
+      "position": "Polifuncional",
+      "civilization": "Khemer",
+      "apodo": "El pola",
+      "stats": {
+        "micro": 8.2,
+        "balance": 8.8,
+        "agresividad": 7.7,
+        "adaptabilidad": 8.5,
+        "estrategia": 8.8,
+        "equipo": 6.8,
+        "mentalidad": 9.0,
+        "mapas": 8.0
+      }
+    },
+    {
+      "name": "Lugut",
+      "position": "-",
+      "civilization": "-",
+      "apodo": "-",
+      "stats": {
+        "micro": 6.4,
+        "balance": 7.8,
+        "agresividad": 6.4,
+        "adaptabilidad": 7.4,
+        "estrategia": 8.0,
+        "equipo": 6.6,
+        "mentalidad": 7.8,
+        "mapas": 7.6
+      }
+    },
+    {
+      "name": "SoLid",
+      "position": "Polifuncional",
+      "civilization": "Mayas",
+      "apodo": "Solinete",
+      "stats": {
+        "micro": 7.4,
+        "balance": 7.8,
+        "agresividad": 7.8,
+        "adaptabilidad": 7.8,
+        "estrategia": 8.2,
+        "equipo": 8.8,
+        "mentalidad": 8.2,
+        "mapas": 8.6
+      }
+    },
+    {
+      "name": "RELP",
+      "position": "-",
+      "civilization": "-",
+      "apodo": "-",
+      "stats": {
+        "micro": 7.0,
+        "balance": 7.2,
+        "agresividad": 7.0,
+        "adaptabilidad": 6.6,
+        "estrategia": 7.2,
+        "equipo": 6.8,
+        "mentalidad": 7.4,
+        "mapas": 7.4
+      }
+    },
+    {
+      "name": "Reymon",
+      "position": "Polifuncional",
+      "civilization": "Lituanos",
+      "apodo": "-",
+      "stats": {
+        "micro": 7.2,
+        "balance": 7.4,
+        "agresividad": 6.4,
+        "adaptabilidad": 7.4,
+        "estrategia": 7.6,
+        "equipo": 8.2,
+        "mentalidad": 7.6,
+        "mapas": 7.6
+      }
+    },
+    {
+      "name": "Danny",
+      "position": "Pocket",
+      "civilization": "-",
+      "apodo": "El biberon",
+      "stats": {
+        "micro": 6.6,
+        "balance": 7.2,
+        "agresividad": 7.0,
+        "adaptabilidad": 5.2,
+        "estrategia": 5.8,
+        "equipo": 6.0,
+        "mentalidad": 4.6,
+        "mapas": 6.2
+      }
+    },
+    {
+      "name": "Lauritop",
+      "position": "Punta",
+      "civilization": "-",
+      "apodo": "-",
+      "stats": {
+        "micro": 6.5,
+        "balance": 6.5,
+        "agresividad": 6.0,
+        "adaptabilidad": 5.3,
+        "estrategia": 5.5,
+        "equipo": 6.0,
+        "mentalidad": 7.2,
+        "mapas": 5.7
+      }
+    },
+    {
+      "name": "Herno",
+      "position": "Punta",
+      "civilization": "Etiopes",
+      "apodo": "El niño maravilla",
+      "stats": {
+        "micro": 7.8,
+        "balance": 5.7,
+        "agresividad": 7.5,
+        "adaptabilidad": 5.7,
+        "estrategia": 5.8,
+        "equipo": 8.0,
+        "mentalidad": 7.3,
+        "mapas": 6.5
+      }
+    },
+    {
+      "name": "Eze",
+      "position": "Pocket",
+      "civilization": "-",
+      "apodo": "Flanco Manco",
+      "stats": {
+        "micro": 5.5,
+        "balance": 8.2,
+        "agresividad": 6.2,
+        "adaptabilidad": 6.0,
+        "estrategia": 8.2,
+        "equipo": 8.0,
+        "mentalidad": 6.3,
+        "mapas": 7.8
+      }
+    },
+    {
+      "name": "Jonny",
+      "position": "Punta",
+      "civilization": "-",
+      "apodo": "-",
+      "stats": {
+        "micro": 7.6,
+        "balance": 7.0,
+        "agresividad": 7.4,
+        "adaptabilidad": 6.8,
+        "estrategia": 7.0,
+        "equipo": 6.4,
+        "mentalidad": 7.6,
+        "mapas": 7.4
+      }
+    },
+    {
+      "name": "Ze Pequeño",
+      "position": "Punta",
+      "civilization": "-",
+      "apodo": "-",
+      "stats": {
+        "micro": 7.0,
+        "balance": 6.0,
+        "agresividad": 8.4,
+        "adaptabilidad": 6.0,
+        "estrategia": 5.8,
+        "equipo": 5.6,
+        "mentalidad": 6.2,
+        "mapas": 5.8
+      }
+    },
+    {
+      "name": "Anakin",
+      "position": "Punta",
+      "civilization": "Ingleses",
+      "apodo": "El boga",
+      "stats": {
+        "micro": 6.2,
+        "balance": 5.8,
+        "agresividad": 5.0,
+        "adaptabilidad": 5.0,
+        "estrategia": 6.6,
+        "equipo": 6.0,
+        "mentalidad": 3.4,
+        "mapas": 7.6
+      }
+    },
+    {
+      "name": "Chetti",
+      "position": "Polifuncional",
+      "civilization": "-",
+      "apodo": "El pelado",
+      "stats": {
+        "micro": 8.4,
+        "balance": 6.0,
+        "agresividad": 6.8,
+        "adaptabilidad": 5.4,
+        "estrategia": 5.2,
+        "equipo": 6.4,
+        "mentalidad": 5.8,
+        "mapas": 5.0
+      }
+    },
+    {
+      "name": "TheRazor",
+      "position": "Polifuncional",
+      "civilization": "Coreanos",
+      "apodo": "Programador emo",
+      "stats": {
+        "micro": 6.2,
+        "balance": 5.8,
+        "agresividad": 5.6,
+        "adaptabilidad": 5.4,
+        "estrategia": 5.6,
+        "equipo": 5.6,
+        "mentalidad": 5.8,
+        "mapas": 6.8
+      }
+    },
+    {
+      "name": "Fran Camet",
+      "position": "Pocket",
+      "civilization": "Magiares",
+      "apodo": "El carnicero de Camet",
+      "stats": {
+        "micro": 3.8,
+        "balance": 5.6,
+        "agresividad": 9.2,
+        "adaptabilidad": 3.6,
+        "estrategia": 3.8,
+        "equipo": 4.2,
+        "mentalidad": 5.2,
+        "mapas": 3.2
+      }
+    },
+    {
+      "name": "Nasper",
+      "position": "Pocket",
+      "civilization": "Persas",
+      "apodo": "El poli",
+      "stats": {
+        "micro": 3.8,
+        "balance": 7.0,
+        "agresividad": 4.8,
+        "adaptabilidad": 4.2,
+        "estrategia": 4.6,
+        "equipo": 5.8,
+        "mentalidad": 5.6,
+        "mapas": 4.6
+      }
+    },
+    {
+      "name": "Alejo Camet",
+      "position": "Pocket",
+      "civilization": "Bereberes",
+      "apodo": "El viejo",
+      "stats": {
+        "micro": 3.2,
+        "balance": 5.2,
+        "agresividad": 4.0,
+        "adaptabilidad": 3.6,
+        "estrategia": 3.4,
+        "equipo": 5.4,
+        "mentalidad": 6.0,
+        "mapas": 4.6
+      }
+    },
+    {
+      "name": "War Machine",
+      "position": "Pocket",
+      "civilization": "-",
+      "apodo": "Luisito",
+      "stats": {
+        "micro": 4.2,
+        "balance": 5.8,
+        "agresividad": 2.8,
+        "adaptabilidad": 4.2,
+        "estrategia": 4.2,
+        "equipo": 6.0,
+        "mentalidad": 8.2,
+        "mapas": 4.6
+      }
+    },
+    {
+      "name": "Dylan",
+      "position": "Punta",
+      "civilization": "Etíopes",
+      "apodo": "Cordobés",
+      "stats": {
+        "micro": 6.5,
+        "balance": 2.8,
+        "agresividad": 7.0,
+        "adaptabilidad": 4.8,
+        "estrategia": 4.8,
+        "equipo": 6.2,
+        "mentalidad": 6.0,
+        "mapas": 5.5
+      }
+    },
+    {
+      "name": "ThePipi",
+      "position": "Polifuncional",
+      "civilization": "-",
+      "apodo": "El pipi",
+      "stats": {
+        "micro": 3.5,
+        "balance": 4.8,
+        "agresividad": 3.5,
+        "adaptabilidad": 2.8,
+        "estrategia": 2.5,
+        "equipo": 5.8,
+        "mentalidad": 6.2,
+        "mapas": 3.8
+      }
+    },
+    {
+      "name": "Marco Van Basten",
+      "position": "Pocket",
+      "civilization": "Jemeres",
+      "apodo": "Manco Van Basten",
+      "stats": {
+        "micro": 3.5,
+        "balance": 5.0,
+        "agresividad": 5.8,
+        "adaptabilidad": 5.2,
+        "estrategia": 5.2,
+        "equipo": 4.2,
+        "mentalidad": 6.0,
+        "mapas": 6.8
+      }
+    },
+    {
+      "name": "Pepe",
+      "position": "Pocket",
+      "civilization": "-",
+      "apodo": "-",
+      "stats": {
+        "micro": 4.7,
+        "balance": 5.3,
+        "agresividad": 7.0,
+        "adaptabilidad": 5.0,
+        "estrategia": 5.0,
+        "equipo": 6.0,
+        "mentalidad": 6.3,
+        "mapas": 5.3
+      }
+    },
+    {
+      "name": "Nachorga",
+      "position": "-",
+      "civilization": "-",
+      "apodo": "-",
+      "stats": {
+        "micro": 5.0,
+        "balance": 5.0,
+        "agresividad": 5.0,
+        "adaptabilidad": 5.0,
+        "estrategia": 4.7,
+        "equipo": 5.3,
+        "mentalidad": 6.0,
+        "mapas": 5.0
+      }
+    },
+    {
+      "name": "Patocuesta",
+      "position": "-",
+      "civilization": "-",
+      "apodo": "-",
+      "stats": {
+        "micro": 4.5,
+        "balance": 4.5,
+        "agresividad": 4.5,
+        "adaptabilidad": 4.0,
+        "estrategia": 4.5,
+        "equipo": 4.5,
+        "mentalidad": 4.0,
+        "mapas": 4.0
+      }
+    }
+  ]
+}

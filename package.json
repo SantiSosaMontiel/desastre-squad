@@ -1,0 +1,16 @@
+{
+  "name": "age-project",
+  "version": "1.0.0",
+  "description": "Age of Empires II player management system",
+  "main": "index.html",
+  "scripts": {
+    "build:css": "tailwindcss -i ./src/input.css -o ./styles.css --watch",
+    "build:css:prod": "tailwindcss -i ./src/input.css -o ./styles.css --minify"
+  },
+  "devDependencies": {
+    "tailwindcss": "^3.4.0"
+  },
+  "keywords": ["age-of-empires", "gaming", "player-management"],
+  "author": "",
+  "license": "MIT"
+} 
