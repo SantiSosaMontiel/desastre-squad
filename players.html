@@ -1,0 +1,461 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>👥 Player Stats - Desastre Squad</title>
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>👥</text></svg>">
+    <link href="styles.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+</head>
+<body class="bg-gradient-to-br from-slate-900 via-purple-900 to-slate-900 min-h-screen">
+    <!-- Main Layout -->
+    <div class="flex h-screen">
+        <!-- Left Sidebar -->
+        <div class="w-64 bg-black/20 backdrop-blur-sm border-r border-white/10">
+            <div class="p-6">
+                <!-- Logo -->
+                <div class="flex items-center gap-3 mb-8">
+                    <div class="w-8 h-8 bg-gradient-to-br from-red-500 to-red-600 rounded-lg flex items-center justify-center">
+                        <span class="text-white font-bold text-sm">DS</span>
+                    </div>
+                    <div>
+                        <h1 class="text-white font-bold text-lg">DESASTRE SQUAD</h1>
+                        <div class="flex items-center gap-2 text-xs text-green-400">
+                            <div class="w-2 h-2 bg-green-400 rounded-full"></div>
+                            <span>Connected</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Navigation -->
+                <nav class="space-y-4">
+                    <div class="space-y-2">
+                        <div class="flex items-center justify-between text-gray-400 text-sm font-medium">
+                            <span>DASHBOARD</span>
+                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 15l7-7 7 7"></path>
+                            </svg>
+                        </div>
+                        <div class="space-y-1">
+                            <a href="index.html" class="flex items-center gap-3 px-3 py-2 text-gray-300 hover:text-white hover:bg-white/5 rounded-lg transition-colors">
+                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"></path>
+                                </svg>
+                                <span>Home page</span>
+                            </a>
+                            <a href="players.html" class="flex items-center gap-3 px-3 py-2 text-white bg-red-500/20 rounded-lg">
+                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"></path>
+                                </svg>
+                                <span>Player Stats</span>
+                            </a>
+                        </div>
+                    </div>
+
+                    <div class="space-y-2">
+                        <div class="flex items-center justify-between text-gray-400 text-sm font-medium">
+                            <span>RANKINGS</span>
+                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 15l7-7 7 7"></path>
+                            </svg>
+                        </div>
+                        <div class="space-y-1">
+                            <a href="ladder.html" class="flex items-center gap-3 px-3 py-2 text-gray-300 hover:text-white hover:bg-white/5 rounded-lg transition-colors">
+                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6"></path>
+                                </svg>
+                                <span>ELO Leaderboard</span>
+                            </a>
+                        </div>
+                    </div>
+
+                    <div class="space-y-2">
+                        <div class="flex items-center justify-between text-gray-400 text-sm font-medium">
+                            <span>MANAGEMENT</span>
+                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 15l7-7 7 7"></path>
+                            </svg>
+                        </div>
+                        <div class="space-y-1">
+                            <a href="app.html" class="flex items-center gap-3 px-3 py-2 text-gray-300 hover:text-white hover:bg-white/5 rounded-lg transition-colors">
+                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6V4m0 2a2 2 0 100 4m0-4a2 2 0 110 4m-6 8a2 2 0 100-4m0 4a2 2 0 100 4m0-4v2m0-6V4m6 6v10m6-2a2 2 0 100-4m0 4a2 2 0 100 4m0-4v2m0-6V4"></path>
+                                </svg>
+                                <span>Original App</span>
+                            </a>
+                        </div>
+                    </div>
+
+                    <div class="space-y-2">
+                        <div class="flex items-center justify-between text-gray-400 text-sm font-medium">
+                            <span>LEGACY</span>
+                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 15l7-7 7 7"></path>
+                            </svg>
+                        </div>
+                        <div class="space-y-1">
+                            <a href="app.html" class="flex items-center gap-3 px-3 py-2 text-gray-400 hover:text-white hover:bg-white/5 rounded-lg transition-colors text-xs">
+                                <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6V4m0 2a2 2 0 100 4m0-4a2 2 0 110 4m-6 8a2 2 0 100-4m0 4a2 2 0 100 4m0-4v2m0-6V4m6 6v10m6-2a2 2 0 100-4m0 4a2 2 0 100 4m0-4v2m0-6V4"></path>
+                                </svg>
+                                <span>App Original</span>
+                            </a>
+                        </div>
+                    </div>
+                </nav>
+
+                <!-- Status -->
+                <div class="mt-8 p-4 bg-white/5 rounded-lg border border-white/10">
+                    <div class="text-center">
+                        <div class="text-2xl font-bold text-white mb-1">24</div>
+                        <div class="text-xs text-gray-400">Players Online</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Main Content -->
+        <div class="flex-1 flex flex-col">
+            <!-- Top Bar -->
+            <div class="h-16 bg-black/20 backdrop-blur-sm border-b border-white/10 flex items-center justify-between px-6">
+                <div class="flex items-center gap-4">
+                    <h2 class="text-xl font-bold text-white">👥 Player Stats</h2>
+                    <div class="flex items-center gap-2 text-sm text-gray-400">
+                        <div class="w-2 h-2 bg-green-400 rounded-full"></div>
+                        <span>Live Data</span>
+                    </div>
+                </div>
+                
+                <div class="flex items-center gap-4">
+                    <div class="text-right">
+                        <div class="text-sm text-gray-400">Last Update</div>
+                        <div id="last-update" class="text-sm font-medium text-white">--</div>
+                    </div>
+                    <button id="refresh-btn" class="flex items-center gap-2 px-4 py-2 bg-red-600 hover:bg-red-700 text-white rounded-lg transition-colors">
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"></path>
+                        </svg>
+                        <span>Refresh</span>
+                    </button>
+                </div>
+            </div>
+
+            <!-- Content Area -->
+            <div class="flex-1 p-6 overflow-auto">
+                <!-- Loading State -->
+                <div id="loading-state" class="flex items-center justify-center h-full">
+                    <div class="text-center">
+                        <div class="inline-flex items-center px-4 py-2 font-semibold leading-6 text-white shadow rounded-md">
+                            <svg class="animate-spin -ml-1 mr-3 h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                                <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                                <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                            </svg>
+                            Loading Players...
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Error State -->
+                <div id="error-state" class="flex items-center justify-center h-full hidden">
+                    <div class="text-center">
+                        <div class="mx-auto flex items-center justify-center h-12 w-12 rounded-full bg-red-100 mb-4">
+                            <svg class="h-6 w-6 text-red-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4c-.77-.833-1.964-.833-2.732 0L3.732 16.5c-.77.833.192 2.5 1.732 2.5z"></path>
+                            </svg>
+                        </div>
+                        <h3 class="text-lg font-medium text-white mb-2">Error al cargar</h3>
+                        <p class="text-gray-400 mb-6">No se pudieron cargar los jugadores</p>
+                        <button id="retry-btn" class="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-white bg-red-600 hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500 transition-colors duration-200">
+                            <svg class="-ml-1 mr-2 h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"></path>
+                            </svg>
+                            Reintentar
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Players Content -->
+                <div id="players-content" class="hidden">
+                    <!-- Stats Header -->
+                    <div class="mb-6 bg-white/5 rounded-lg p-4 border border-white/10">
+                        <div class="flex items-center justify-between">
+                            <div>
+                                <h2 class="text-lg font-semibold text-white">Player Statistics</h2>
+                                <p class="text-sm text-gray-400">Estadísticas detalladas del Desastre Squad</p>
+                            </div>
+                            <div class="text-right">
+                                <p class="text-sm text-gray-400">Total Players</p>
+                                <p id="total-players" class="text-sm font-medium text-white">--</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Players Grid -->
+                    <div id="players-grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+                        <!-- Player cards will be generated here -->
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="config.js"></script>
+    <script>
+        // Configuración de Supabase
+        const supabaseUrl = window.SUPABASE_CONFIG?.url || 'https://aikktkocuuwjysykoqka.supabase.co';
+        const supabaseKey = window.SUPABASE_CONFIG?.key || 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImFpa2t0a29jdXV3anlzeWtvcWthIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTM3NTg1ODQsImV4cCI6MjA2OTMzNDU4NH0.uAD1wUXORCaGqwRjBfNB1Dy4575Y_IelFPWjvX1QPyw';
+
+        // Player data from JSON
+        let playersData = [];
+
+        // Get player photo filename
+        function getPlayerPhoto(playerName) {
+            const photoMap = {
+                'sszafranko': 'sszafranko.png',
+                'Lugut': 'placeholder-avatar.png',
+                'SoLid': 'solid.jpeg',
+                'Jonny': 'jonny.jpeg',
+                'RELP': 'relp.png',
+                'Reymon': 'reymon.png',
+                'Danny': 'placeholder-avatar.png',
+                'Ze Pequeño': 'ze pequeño.png',
+                'Lauritop': 'lauritop.png',
+                'Herno': 'herno.png',
+                'Eze': 'placeholder-avatar.png',
+                'Anakin': 'anakin.png',
+                'Chetti': 'chetti.png',
+                'TheRazor': 'therazor.png',
+                'Pepe': 'pepe.png',
+                'Fran Camet': 'fran camet.png',
+                'Nachorga': 'nachorga.png',
+                'Marco Van Basten': 'marco van basten.png',
+                'Nasper': 'nasper.png',
+                'Alejo Camet': 'alejo camet.png',
+                'War Machine': 'placeholder-avatar.png',
+                'Dylan': 'dylan.jpeg',
+                'Patocuesta': 'patocuesta.png',
+                'ThePipi': 'thepipi.png'
+            };
+            
+            return photoMap[playerName] || 'placeholder-avatar.png';
+        }
+
+        // Get position color
+        function getPositionColor(position) {
+            switch(position) {
+                case 'Punta': return 'bg-red-500';
+                case 'Pocket': return 'bg-blue-500';
+                case 'Polifuncional': return 'bg-green-500';
+                default: return 'bg-gray-500';
+            }
+        }
+
+        // Fetch ELO from Supabase
+        async function fetchEloFromSupabase(playerName) {
+            try {
+                console.log(`Fetching ELO for: ${playerName}`);
+                const response = await fetch(`${supabaseUrl}/rest/v1/aoe_elos_1v1?player_name=eq.${encodeURIComponent(playerName)}`, {
+                    headers: {
+                        'apikey': supabaseKey,
+                        'Authorization': `Bearer ${supabaseKey}`
+                    }
+                });
+
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status}`);
+                }
+
+                const data = await response.json();
+                console.log(`ELO data for ${playerName}:`, data);
+                return data && data.length > 0 ? data[0] : null;
+            } catch (error) {
+                console.error(`Error fetching ELO for ${playerName}:`, error);
+                return null;
+            }
+        }
+
+        // Check if ELO is expired (older than 24 hours)
+        function isEloExpired(lastUpdated) {
+            const lastUpdate = new Date(lastUpdated);
+            const now = new Date();
+            const diffHours = (now - lastUpdate) / (1000 * 60 * 60);
+            return diffHours > 24;
+        }
+
+        // Load players data from JSON
+        async function loadPlayersData() {
+            try {
+                const response = await fetch('desastre-squad-players.json');
+                const data = await response.json();
+                playersData = data.players;
+                console.log('Players data loaded:', playersData);
+                return playersData;
+            } catch (error) {
+                console.error('Error loading players data:', error);
+                return [];
+            }
+        }
+
+        // Display players
+        async function displayPlayers() {
+            console.log('Starting to display players...');
+            const playersGrid = document.getElementById('players-grid');
+            const totalPlayers = document.getElementById('total-players');
+            
+            if (!playersGrid) {
+                console.error('Could not find players-grid element');
+                return;
+            }
+
+            // Load players data if not already loaded
+            if (playersData.length === 0) {
+                await loadPlayersData();
+            }
+            
+            // Load ELOs for all players
+            const eloPromises = playersData.map(async (player) => {
+                try {
+                    const supabaseData = await fetchEloFromSupabase(player.name);
+                    if (supabaseData && !isEloExpired(supabaseData.last_updated) && supabaseData.elo_value !== 'No encontrado') {
+                        return {
+                            ...player,
+                            elo: supabaseData.elo_value,
+                            lastUpdated: supabaseData.last_updated
+                        };
+                    }
+                    return {
+                        ...player,
+                        elo: 'N/A',
+                        lastUpdated: null
+                    };
+                } catch (error) {
+                    console.error(`Error loading ELO for ${player.name}:`, error);
+                    return {
+                        ...player,
+                        elo: 'N/A',
+                        lastUpdated: null
+                    };
+                }
+            });
+
+            const playersWithElo = await Promise.all(eloPromises);
+            console.log('Players with ELO:', playersWithElo);
+            
+            // Generate player cards
+            const playerCards = playersWithElo.map((player, index) => {
+                const playerPhoto = getPlayerPhoto(player.name);
+                const positionColor = getPositionColor(player.position);
+                
+                return `
+                    <div class="bg-black/20 backdrop-blur-sm rounded-xl border border-white/10 overflow-hidden hover:scale-105 transition-all duration-300 cursor-pointer">
+                        <div class="p-4">
+                            <!-- Player Header -->
+                            <div class="flex items-center gap-3 mb-3">
+                                <div class="w-12 h-12 rounded-full overflow-hidden border-2 border-white/20">
+                                    <img src="photos/${playerPhoto}" alt="${player.name}" class="w-full h-full object-cover" onerror="this.src='placeholder-avatar.png'">
+                                </div>
+                                <div class="flex-1">
+                                    <h3 class="text-base font-bold text-white">${player.name}</h3>
+                                    <p class="text-xs text-gray-400">Desastre Squad</p>
+                                </div>
+                                <div class="text-right">
+                                    <div class="text-xs text-gray-400">#${index + 1}</div>
+                                </div>
+                            </div>
+                            
+                            <!-- Player Info -->
+                            <div class="space-y-2 mb-3">
+                                <div class="flex items-center justify-between">
+                                    <span class="text-xs text-gray-400">Position</span>
+                                    <span class="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium ${positionColor} text-white">
+                                        ${player.position || 'N/A'}
+                                    </span>
+                                </div>
+                                <div class="flex items-center justify-between">
+                                    <span class="text-xs text-gray-400">Civilization</span>
+                                    <span class="text-xs font-medium text-white">${player.civilization || 'N/A'}</span>
+                                </div>
+                                <div class="flex items-center justify-between">
+                                    <span class="text-xs text-gray-400">Apodo</span>
+                                    <span class="text-xs font-medium text-yellow-400">${player.apodo || 'N/A'}</span>
+                                </div>
+                                <div class="flex items-center justify-between">
+                                    <span class="text-xs text-gray-400">ELO</span>
+                                    <span class="text-sm font-bold text-green-400">${player.elo}</span>
+                                </div>
+                            </div>
+                            
+                            <!-- Action Button -->
+                            <div class="text-center">
+                                <button onclick="window.location.href='player-details.html?player=${player.name}'" class="text-xs text-gray-400 hover:text-white transition-colors duration-200 underline">
+                                    Ver detalles
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                `;
+            }).join('');
+            
+            playersGrid.innerHTML = playerCards;
+            totalPlayers.textContent = playersData.length;
+        }
+
+        // Initialize page
+        document.addEventListener('DOMContentLoaded', function() {
+            console.log('DOM loaded, initializing players...');
+            const loadingState = document.getElementById('loading-state');
+            const errorState = document.getElementById('error-state');
+            const playersContent = document.getElementById('players-content');
+            const lastUpdate = document.getElementById('last-update');
+            const refreshBtn = document.getElementById('refresh-btn');
+            const retryBtn = document.getElementById('retry-btn');
+
+            if (!loadingState || !errorState || !playersContent || !lastUpdate) {
+                console.error('Could not find required elements');
+                return;
+            }
+
+            // Refresh button
+            if (refreshBtn) {
+                refreshBtn.addEventListener('click', function() {
+                    console.log('Refresh button clicked');
+                    loadPlayers();
+                });
+            }
+
+            // Retry button
+            if (retryBtn) {
+                retryBtn.addEventListener('click', function() {
+                    console.log('Retry button clicked');
+                    loadPlayers();
+                });
+            }
+
+            // Load players function
+            async function loadPlayers() {
+                console.log('Loading players...');
+                loadingState.classList.remove('hidden');
+                errorState.classList.add('hidden');
+                playersContent.classList.add('hidden');
+
+                try {
+                    await displayPlayers();
+                    lastUpdate.textContent = new Date().toLocaleTimeString();
+                    
+                    loadingState.classList.add('hidden');
+                    playersContent.classList.remove('hidden');
+                    console.log('Players loaded successfully');
+                } catch (error) {
+                    console.error('Error loading players:', error);
+                    loadingState.classList.add('hidden');
+                    errorState.classList.remove('hidden');
+                }
+            }
+
+            // Start loading
+            loadPlayers();
+        });
+    </script>
+</body>
+</html> 

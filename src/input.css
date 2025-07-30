@@ -102,7 +102,7 @@
   }
 
   .age-indicator.active {
-    @apply bg-age-red scale-120 border-white shadow-lg shadow-red-500/50;
+    @apply bg-age-red scale-125 border-white shadow-lg shadow-red-500/50;
   }
 
   /* Componentes de controles */
@@ -786,5 +786,77 @@
   .progress-text {
     font-size: 0.9rem;
     color: #ccc;
+  }
+
+  /* Animaciones para la landing page */
+  .animate-fade-in {
+    animation: fadeIn 0.6s ease-out forwards;
+  }
+  
+  @keyframes fadeIn {
+    from {
+      opacity: 0;
+      transform: translateY(20px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  /* Estilos para la landing page */
+  .landing-header {
+    text-align: center;
+    padding-top: 4rem;
+    padding-bottom: 2rem;
+  }
+
+  .landing-hero {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0 2rem;
+  }
+
+  .landing-footer {
+    text-align: center;
+    padding: 2rem 0;
+  }
+
+  /* Estilos originales del header y navegación */
+  header {
+    text-align: center;
+    margin-bottom: 40px;
+  }
+
+  header h1 {
+    font-size: 3rem;
+    font-weight: bold;
+    color: #ff0000;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    text-shadow: 2px 2px 4px rgba(0,0,0,0.8);
+    margin-bottom: 10px;
+  }
+
+  .subtitle {
+    font-size: 1.2rem;
+    color: #ccc;
+    text-shadow: 1px 1px 2px rgba(0,0,0,0.8);
+    margin-bottom: 20px;
+  }
+
+  .main-nav {
+    display: flex;
+    justify-content: center;
+    gap: 20px;
+    margin-bottom: 30px;
+  }
+
+  .container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 20px;
   }
 } 
