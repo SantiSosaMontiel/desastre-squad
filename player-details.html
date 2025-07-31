@@ -495,9 +495,9 @@
                 throw new Error('Player not found');
             }
 
-            // Load ELO
+            // Load ELO - Always show from database if available
             const eloData = await fetchEloFromSupabase(playerName);
-            const elo = eloData && !isEloExpired(eloData.last_updated) && eloData.elo_value !== 'No encontrado' 
+            const elo = eloData && eloData.elo_value !== 'No encontrado' 
                 ? eloData.elo_value 
                 : 'N/A';
 
