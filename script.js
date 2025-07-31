@@ -1078,8 +1078,14 @@ class TeamStatsApp {
                 this.eloCache[playerName] = supabaseData.elo_value;
                 playersWithValidData.push(playerName);
                 console.log(`ELO válido encontrado para ${playerName}: ${supabaseData.elo_value}`);
+            } else if (supabaseData && this.isEloExpired(supabaseData.last_updated) && supabaseData.elo_value !== 'No encontrado') {
+                // ELO expirado pero válido, usar el existente y actualizar en background
+                this.eloCache[playerName] = supabaseData.elo_value;
+                playersWithValidData.push(playerName);
+                playersToUpdate.push(playerName); // Para actualizar en background
+                console.log(`ELO expirado pero válido para ${playerName}: ${supabaseData.elo_value}, actualizando en background...`);
             } else {
-                // ELO expirado, no existe, o es "No encontrado"
+                // ELO no existe, es "No encontrado", o está expirado y es "No encontrado"
                 playersToUpdate.push(playerName);
                 if (supabaseData && supabaseData.elo_value === 'No encontrado') {
                     console.log(`ELO "No encontrado" para ${playerName}, eliminando y reintentando...`);
@@ -1096,86 +1102,85 @@ class TeamStatsApp {
         console.log(`Jugadores con datos válidos: ${playersWithValidData.length}`);
         console.log(`Jugadores que necesitan actualización: ${playersToUpdate.length}`);
         
-        // Si todos tienen datos válidos, mostrar ladder inmediatamente
-        if (playersToUpdate.length === 0) {
-            console.log('Todos los ELOs están actualizados, mostrando ladder...');
-            this.displayLadder();
-            return;
-        }
+        // Mostrar ladder inmediatamente con los datos disponibles
+        this.displayLadder();
         
-        // Crear overlay de loading solo si hay jugadores que actualizar
-        const loadingOverlay = document.createElement('div');
-        loadingOverlay.className = 'loading-overlay';
-        loadingOverlay.innerHTML = `
-            <div class="loading-content">
-                <div class="loading-spinner"></div>
-                <div class="loading-text">Actualizando ELOs expirados...</div>
-                <div class="loading-info">Usando datos de Supabase. Solo actualizando ${playersToUpdate.length} jugadores.</div>
-                <div class="loading-progress">
-                    <div class="progress-bar">
-                        <div class="progress-fill"></div>
+        // Si hay jugadores que actualizar, hacerlo en background
+        if (playersToUpdate.length > 0) {
+            // Crear overlay de loading solo si hay jugadores que actualizar
+            const loadingOverlay = document.createElement('div');
+            loadingOverlay.className = 'loading-overlay';
+            loadingOverlay.innerHTML = `
+                <div class="loading-content">
+                    <div class="loading-spinner"></div>
+                    <div class="loading-text">Actualizando ELOs en background...</div>
+                    <div class="loading-info">Usando datos de Supabase. Actualizando ${playersToUpdate.length} jugadores.</div>
+                    <div class="loading-progress">
+                        <div class="progress-bar">
+                            <div class="progress-fill"></div>
+                        </div>
+                        <div class="progress-text">0 / ${playersToUpdate.length}</div>
                     </div>
-                    <div class="progress-text">0 / ${playersToUpdate.length}</div>
                 </div>
-            </div>
-        `;
-        document.body.appendChild(loadingOverlay);
+            `;
+            document.body.appendChild(loadingOverlay);
 
-        let loadedCount = 0;
-        const totalCount = playersToUpdate.length;
+            let loadedCount = 0;
+            const totalCount = playersToUpdate.length;
 
-        console.log(`Actualizando ELOs para ${totalCount} jugadores...`);
+            console.log(`Actualizando ELOs para ${totalCount} jugadores en background...`);
 
-        // Función para actualizar progreso
-        const updateProgress = () => {
-            const progressFill = loadingOverlay.querySelector('.progress-fill');
-            const progressText = loadingOverlay.querySelector('.progress-text');
-            const percentage = (loadedCount / totalCount) * 100;
-            
-            progressFill.style.width = percentage + '%';
-            progressText.textContent = `${loadedCount} / ${totalCount}`;
-        };
-
-        // Función para cargar ELO de un jugador con retry
-        const loadPlayerElo = async (playerName, index, retryCount = 0) => {
-            try {
-                await this.updatePlayerElo(playerName, false);
-                loadedCount++;
-                updateProgress();
+            // Función para actualizar progreso
+            const updateProgress = () => {
+                const progressFill = loadingOverlay.querySelector('.progress-fill');
+                const progressText = loadingOverlay.querySelector('.progress-text');
+                const percentage = (loadedCount / totalCount) * 100;
                 
-                // Si es el último, remover overlay y mostrar ladder
-                if (loadedCount === totalCount) {
-                    setTimeout(() => {
-                        loadingOverlay.style.opacity = '0';
-                        setTimeout(() => {
-                            document.body.removeChild(loadingOverlay);
-                            this.displayLadder();
-                        }, 500);
-                    }, 1000);
-                }
-            } catch (error) {
-                console.error('Error cargando ELO para', playerName, error);
-                
-                // Retry hasta 2 veces con delay
-                if (retryCount < 2) {
-                    console.log(`Reintentando ELO para ${playerName} (intento ${retryCount + 1})`);
-                    setTimeout(() => {
-                        loadPlayerElo(playerName, index, retryCount + 1);
-                    }, 3000); // Esperar 3 segundos antes de retry
-                } else {
-                    console.log(`Falló ELO para ${playerName} después de 3 intentos`);
+                progressFill.style.width = percentage + '%';
+                progressText.textContent = `${loadedCount} / ${totalCount}`;
+            };
+
+            // Función para cargar ELO de un jugador con retry
+            const loadPlayerElo = async (playerName, index, retryCount = 0) => {
+                try {
+                    await this.updatePlayerElo(playerName, false);
                     loadedCount++;
                     updateProgress();
+                    
+                    // Si es el último, remover overlay y actualizar ladder
+                    if (loadedCount === totalCount) {
+                        setTimeout(() => {
+                            loadingOverlay.style.opacity = '0';
+                            setTimeout(() => {
+                                document.body.removeChild(loadingOverlay);
+                                this.displayLadder(); // Actualizar ladder con nuevos datos
+                            }, 500);
+                        }, 1000);
+                    }
+                } catch (error) {
+                    console.error('Error cargando ELO para', playerName, error);
+                    
+                    // Retry hasta 2 veces con delay
+                    if (retryCount < 2) {
+                        console.log(`Reintentando ELO para ${playerName} (intento ${retryCount + 1})`);
+                        setTimeout(() => {
+                            loadPlayerElo(playerName, index, retryCount + 1);
+                        }, 3000); // Esperar 3 segundos antes de retry
+                    } else {
+                        console.log(`Falló ELO para ${playerName} después de 3 intentos`);
+                        loadedCount++;
+                        updateProgress();
+                    }
                 }
-            }
-        };
+            };
 
-        // Cargar ELOs con delay para no sobrecargar
-        playersToUpdate.forEach((playerName, index) => {
-            setTimeout(() => {
-                loadPlayerElo(playerName, index);
-            }, index * 5000); // 5 segundos entre cada petición
-        });
+            // Cargar ELOs con delay para no sobrecargar
+            playersToUpdate.forEach((playerName, index) => {
+                setTimeout(() => {
+                    loadPlayerElo(playerName, index);
+                }, index * 5000); // 5 segundos entre cada petición
+            });
+        }
     }
 
     displayLadder() {
@@ -1188,7 +1193,7 @@ class TeamStatsApp {
                 name,
                 elo: this.eloCache[name] || 'No disponible'
             }))
-            .filter(player => player.elo !== 'No disponible' && player.elo !== 'Error' && player.elo !== 'Timeout')
+            .filter(player => player.elo !== 'No disponible' && player.elo !== 'Error' && player.elo !== 'Timeout' && player.elo !== 'No encontrado')
             .sort((a, b) => parseInt(b.elo) - parseInt(a.elo));
 
         if (sortedPlayers.length === 0) {

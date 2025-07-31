@@ -321,18 +321,207 @@
                 return;
             }
             
-            // Load ELOs from Supabase
+            // Player user IDs mapping
+            const playerUserIds = {
+                'sszafranko': '2505639',
+                'Lugut': '342673',
+                'SoLid': '2620848',
+                'Jonny': '78611',
+                'RELP': '12369433',
+                'Reymon': '2212194',
+                'Danny': '2446863',
+                'Ze Pequeño': '4183283',
+                'Lauritop': '1339133',
+                'Herno': '4818662',
+                'Eze': '624633',
+                'Anakin': '2895394',
+                'Chetti': '2663132',
+                'TheRazor': '5013587',
+                'Pepe': '5400853',
+                'Fran Camet': '2809718',
+                'Nachorga': '2050506',
+                'Marco Van Basten': '227170',
+                'Nasper': '228679',
+                'Alejo Camet': '2648565',
+                'War Machine': '3174913',
+                'Dylan': '3582825',
+                'Patocuesta': '1100546',
+                'ThePipi': '2408832'
+            };
+
+            // Function to fetch ELO from aoe2insights
+            async function fetchEloFromAoe2insights(playerName, userId) {
+                try {
+                    console.log(`Fetching ELO from aoe2insights for: ${playerName}`);
+                    const proxyUrl = 'https://api.allorigins.win/raw?url=';
+                    const targetUrl = `https://www.aoe2insights.com/user/${userId}/`;
+                    
+                    const controller = new AbortController();
+                    const timeoutId = setTimeout(() => controller.abort(), 15000);
+                    
+                    const response = await fetch(proxyUrl + encodeURIComponent(targetUrl), {
+                        signal: controller.signal
+                    });
+                    
+                    clearTimeout(timeoutId);
+                    
+                    if (!response.ok) {
+                        throw new Error(`HTTP error! status: ${response.status}`);
+                    }
+                    
+                    const html = await response.text();
+                    
+                    // Buscar el ELO de 1v1 Random Map
+                    const eloMatch = html.match(/1v1 RM[\s\S]*?Rating\s+(\d+)/);
+                    if (eloMatch) {
+                        return eloMatch[1];
+                    }
+                    
+                    // Patrón alternativo
+                    const ratingMatch = html.match(/Rating\s+(\d+)/);
+                    if (ratingMatch) {
+                        return ratingMatch[1];
+                    }
+                    
+                    // Patrón genérico
+                    const anyRatingMatch = html.match(/Rating[^0-9]*(\d+)/);
+                    if (anyRatingMatch) {
+                        return anyRatingMatch[1];
+                    }
+                    
+                    return null;
+                } catch (error) {
+                    console.error(`Error fetching ELO from aoe2insights for ${playerName}:`, error);
+                    return null;
+                }
+            }
+
+            // Function to save ELO to Supabase
+            async function saveEloToSupabase(playerName, eloValue) {
+                try {
+                    const response = await fetch(`${supabaseUrl}/rest/v1/aoe_elos_1v1`, {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'apikey': supabaseKey,
+                            'Authorization': `Bearer ${supabaseKey}`
+                        },
+                        body: JSON.stringify({
+                            player_name: playerName,
+                            elo_value: eloValue,
+                            last_updated: new Date().toISOString()
+                        })
+                    });
+                    
+                    if (response.ok) {
+                        console.log(`✅ ELO saved to Supabase for ${playerName}: ${eloValue}`);
+                        return true;
+                    }
+                    
+                    // Si POST falla, intentar PATCH
+                    if (response.status === 409) {
+                        const patchResponse = await fetch(`${supabaseUrl}/rest/v1/aoe_elos_1v1?player_name=eq.${encodeURIComponent(playerName)}`, {
+                            method: 'PATCH',
+                            headers: {
+                                'Content-Type': 'application/json',
+                                'apikey': supabaseKey,
+                                'Authorization': `Bearer ${supabaseKey}`
+                            },
+                            body: JSON.stringify({
+                                elo_value: eloValue,
+                                last_updated: new Date().toISOString()
+                            })
+                        });
+                        
+                        if (patchResponse.ok) {
+                            console.log(`✅ ELO updated in Supabase for ${playerName}: ${eloValue}`);
+                            return true;
+                        }
+                    }
+                    
+                    return false;
+                } catch (error) {
+                    console.error('Error saving ELO to Supabase:', error);
+                    return false;
+                }
+            }
+            
+            // Load ELOs from Supabase with fallback logic
             const eloPromises = playerNames.map(async (playerName) => {
                 try {
                     const supabaseData = await fetchEloFromSupabase(playerName);
-                    if (supabaseData && !isEloExpired(supabaseData.last_updated) && supabaseData.elo_value !== 'No encontrado') {
-                        return {
-                            name: playerName,
-                            elo: supabaseData.elo_value,
-                            lastUpdated: supabaseData.last_updated
-                        };
+                    const userId = playerUserIds[playerName];
+                    
+                    if (supabaseData) {
+                        if (!isEloExpired(supabaseData.last_updated) && supabaseData.elo_value !== 'No encontrado') {
+                            // ELO válido y no expirado
+                            console.log(`Using valid ELO for ${playerName}: ${supabaseData.elo_value}`);
+                            return {
+                                name: playerName,
+                                elo: supabaseData.elo_value,
+                                lastUpdated: supabaseData.last_updated
+                            };
+                        } else if (isEloExpired(supabaseData.last_updated) && supabaseData.elo_value !== 'No encontrado') {
+                            // ELO expirado pero existe, intentar actualizar desde aoe2insights
+                            console.log(`ELO expired for ${playerName}, trying to update from aoe2insights...`);
+                            if (userId) {
+                                const newElo = await fetchEloFromAoe2insights(playerName, userId);
+                                if (newElo) {
+                                    await saveEloToSupabase(playerName, newElo);
+                                    return {
+                                        name: playerName,
+                                        elo: newElo,
+                                        lastUpdated: new Date().toISOString()
+                                    };
+                                } else {
+                                    // Si no se puede obtener nuevo ELO, usar el de la base
+                                    console.log(`Could not get new ELO for ${playerName}, using existing: ${supabaseData.elo_value}`);
+                                    return {
+                                        name: playerName,
+                                        elo: supabaseData.elo_value,
+                                        lastUpdated: supabaseData.last_updated
+                                    };
+                                }
+                            } else {
+                                // No hay user ID, usar el ELO existente
+                                return {
+                                    name: playerName,
+                                    elo: supabaseData.elo_value,
+                                    lastUpdated: supabaseData.last_updated
+                                };
+                            }
+                        } else {
+                            // ELO es "No encontrado", intentar obtener desde aoe2insights
+                            console.log(`ELO is "No encontrado" for ${playerName}, trying aoe2insights...`);
+                            if (userId) {
+                                const newElo = await fetchEloFromAoe2insights(playerName, userId);
+                                if (newElo) {
+                                    await saveEloToSupabase(playerName, newElo);
+                                    return {
+                                        name: playerName,
+                                        elo: newElo,
+                                        lastUpdated: new Date().toISOString()
+                                    };
+                                }
+                            }
+                            return null;
+                        }
+                    } else {
+                        // No hay datos en Supabase, intentar obtener desde aoe2insights
+                        console.log(`No data in Supabase for ${playerName}, trying aoe2insights...`);
+                        if (userId) {
+                            const newElo = await fetchEloFromAoe2insights(playerName, userId);
+                            if (newElo) {
+                                await saveEloToSupabase(playerName, newElo);
+                                return {
+                                    name: playerName,
+                                    elo: newElo,
+                                    lastUpdated: new Date().toISOString()
+                                };
+                            }
+                        }
+                        return null;
                     }
-                    return null;
                 } catch (error) {
                     console.error(`Error loading ELO for ${playerName}:`, error);
                     return null;
