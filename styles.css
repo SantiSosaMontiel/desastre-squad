@@ -1533,6 +1533,14 @@ body {
   background-color: rgb(147 51 234 / var(--tw-bg-opacity, 1));
 }
 
+.bg-blue-500\/20 {
+  background-color: rgb(59 130 246 / 0.2);
+}
+
+.bg-purple-500\/20 {
+  background-color: rgb(168 85 247 / 0.2);
+}
+
 .bg-\[url\(\'fondo\.jpg\'\)\] {
   background-image: url('fondo.jpg');
 }
@@ -2738,6 +2746,10 @@ header h1 {
 .hover\:border-red-400:hover {
   --tw-border-opacity: 1;
   border-color: rgb(248 113 113 / var(--tw-border-opacity, 1));
+}
+
+.hover\:border-white\/30:hover {
+  border-color: rgb(255 255 255 / 0.3);
 }
 
 .hover\:bg-red-700:hover {

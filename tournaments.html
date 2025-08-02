@@ -196,6 +196,14 @@
                             </div>
                         </div>
 
+                        <!-- Tournament Links -->
+                        <div class="mb-6">
+                            <h3 class="text-md font-semibold text-white mb-4">🔗 Enlaces Útiles</h3>
+                            <div id="tournament-links" class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                                <!-- Tournament links will be generated here -->
+                            </div>
+                        </div>
+
                         <!-- Teams Grid -->
                         <div id="teams-grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
                             <!-- Team cards will be generated here -->
@@ -366,6 +374,9 @@
             // Display teams
             displayTeams();
 
+            // Display tournament links
+            displayTournamentLinks();
+
             // Show tournament details, hide tournaments list
             tournamentsListElement.classList.add('hidden');
             tournamentDetailsElement.classList.remove('hidden');
@@ -392,6 +403,66 @@
         function showTeamDetails(tournamentId, teamId) {
             console.log('Showing team details for tournament:', tournamentId, 'team:', teamId);
             window.location.href = `team-details.html?tournament=${tournamentId}&team=${teamId}`;
+        }
+
+        // Display tournament links
+        function displayTournamentLinks() {
+            console.log('Displaying tournament links...');
+            const linksContainer = document.getElementById('tournament-links');
+            
+            if (!linksContainer) {
+                console.error('Could not find tournament-links element');
+                return;
+            }
+
+            const links = [
+                {
+                    name: '🏆 Cruces del Torneo',
+                    description: 'Ver el bracket y resultados en Challonge',
+                    url: 'https://challonge.com/es/x685du4w',
+                    icon: 'M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z',
+                    color: 'bg-blue-500/20 text-blue-400'
+                },
+                {
+                    name: '🗺️ Draft BO3',
+                    description: 'Configuración de mapas para Best of 3',
+                    url: 'https://aoe2cm.net/preset/CXTlX',
+                    icon: 'M9 20l-5.447-2.724A1 1 0 013 16.382V5.618a1 1 0 011.447-.894L9 7m0 13l6-3m-6 3V7m6 10l4.553 2.276A1 1 0 0021 18.382V7.618a1 1 0 00-1.447-.894L15 4m0 13V4m0 0L9 7',
+                    color: 'bg-green-500/20 text-green-400'
+                },
+                {
+                    name: '🗺️ Draft BO5',
+                    description: 'Configuración de mapas para Best of 5',
+                    url: 'https://aoe2cm.net/preset/pSMEc',
+                    icon: 'M9 20l-5.447-2.724A1 1 0 013 16.382V5.618a1 1 0 011.447-.894L9 7m0 13l6-3m-6 3V7m6 10l4.553 2.276A1 1 0 0021 18.382V7.618a1 1 0 00-1.447-.894L15 4m0 13V4m0 0L9 7',
+                    color: 'bg-purple-500/20 text-purple-400'
+                }
+            ];
+
+            const linksHTML = links.map(link => `
+                <a href="${link.url}" target="_blank" rel="noopener noreferrer" class="bg-black/20 backdrop-blur-sm rounded-xl border border-white/10 overflow-hidden hover:scale-105 transition-all duration-300 hover:border-white/30">
+                    <div class="p-4">
+                        <div class="flex items-center gap-3">
+                            <div class="w-10 h-10 ${link.color} rounded-lg flex items-center justify-center">
+                                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="${link.icon}"></path>
+                                </svg>
+                            </div>
+                            <div class="flex-1">
+                                <h4 class="text-sm font-semibold text-white">${link.name}</h4>
+                                <p class="text-xs text-gray-400">${link.description}</p>
+                            </div>
+                            <div class="text-gray-400">
+                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"></path>
+                                </svg>
+                            </div>
+                        </div>
+                    </div>
+                </a>
+            `).join('');
+
+            linksContainer.innerHTML = linksHTML;
         }
 
         // Display teams
