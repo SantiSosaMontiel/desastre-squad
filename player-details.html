@@ -205,8 +205,12 @@
                                         <div class="text-xs text-gray-400">ELO Rating</div>
                                     </div>
                                     <div class="text-center">
-                                        <div class="text-2xl font-bold text-blue-400" id="player-rank"></div>
-                                        <div class="text-xs text-gray-400">Team Rank</div>
+                                        <a id="aoe2insights-link" href="#" target="_blank" class="inline-flex items-center gap-2 px-3 py-2 bg-blue-600 hover:bg-blue-700 text-white text-sm rounded-lg transition-colors duration-200">
+                                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"></path>
+                                            </svg>
+                                            <span>AoE2Insights</span>
+                                        </a>
                                     </div>
                                 </div>
                             </div>
@@ -314,6 +318,34 @@
         const supabaseKey = window.SUPABASE_CONFIG?.key || 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImFpa2t0a29jdXV3anlzeWtvcWthIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTM3NTg1ODQsImV4cCI6MjA2OTMzNDU4NH0.uAD1wUXORCaGqwRjBfNB1Dy4575Y_IelFPWjvX1QPyw';
 
         let radarChart = null;
+
+        // Player User IDs mapping for AoE2Insights
+        const playerUserIds = {
+            'sszafranko': '2505639',
+            'Lugut': '342673',
+            'SoLid': '2620848',
+            'Jonny': '78611',
+            'RELP': '12369433',
+            'Reymon': '2212194',
+            'Danny': '2446863',
+            'Ze Pequeño': '4183283',
+            'Lauritop': '1339133',
+            'Herno': '4818662',
+            'Eze': '624633',
+            'Anakin': '2895394',
+            'Chetti': '2663132',
+            'TheRazor': '5013587',
+            'Pepe': '5400853',
+            'Fran Camet': '2809718',
+            'Nachorga': '2050506',
+            'Marco Van Basten': '227170',
+            'Nasper': '228679',
+            'Alejo Camet': '2648565',
+            'War Machine': '3174913',
+            'Dylan': '3582825',
+            'Patocuesta': '1100546',
+            'ThePipi': '2408832'
+        };
 
         // Get player photo filename
         function getPlayerPhoto(playerName) {
@@ -507,7 +539,15 @@
             document.getElementById('player-civilization').textContent = player.civilization || 'N/A';
             document.getElementById('player-apodo').textContent = player.apodo || 'N/A';
             document.getElementById('player-elo').textContent = elo;
-            document.getElementById('player-rank').textContent = '#1'; // Placeholder
+            
+            // Set AoE2Insights link
+            const userId = playerUserIds[player.name];
+            const aoe2insightsLink = document.getElementById('aoe2insights-link');
+            if (userId && aoe2insightsLink) {
+                aoe2insightsLink.href = `https://www.aoe2insights.com/user/${userId}/`;
+            } else if (aoe2insightsLink) {
+                aoe2insightsLink.style.display = 'none';
+            }
             
             // Update photo
             const photo = getPlayerPhoto(player.name);

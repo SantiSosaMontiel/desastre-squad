@@ -1,0 +1,64 @@
+{
+  "tournament": {
+    "name": "Torneo 3v3",
+    "type": "3v3",
+    "teams": [
+      {
+        "id": 1,
+        "captain": "Nomadplayer",
+        "player2": "Ze Pequeño",
+        "player3": "War Machine",
+        "status": "active"
+      },
+      {
+        "id": 2,
+        "captain": "sszafranko",
+        "player2": "TheRazor",
+        "player3": "Fran Camet",
+        "status": "active"
+      },
+      {
+        "id": 3,
+        "captain": "RELP",
+        "player2": "Lauritop",
+        "player3": "Nasper",
+        "status": "active"
+      },
+      {
+        "id": 4,
+        "captain": "SoLid",
+        "player2": "Anakin",
+        "player3": "Alejo Camet",
+        "status": "active"
+      },
+      {
+        "id": 5,
+        "captain": "Joanel",
+        "player2": "Chetti",
+        "player3": "Marco Van Basten",
+        "status": "active"
+      },
+      {
+        "id": 6,
+        "captain": "Danny",
+        "player2": "Herno",
+        "player3": "Dylan",
+        "status": "active"
+      },
+      {
+        "id": 7,
+        "captain": "Reymon",
+        "player2": "Eze",
+        "player3": "ThePipi",
+        "status": "active"
+      },
+      {
+        "id": 8,
+        "captain": "Lugut",
+        "player2": "Pepe",
+        "player3": "Nachorga",
+        "status": "active"
+      }
+    ]
+  }
+} 
