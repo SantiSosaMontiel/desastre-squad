@@ -1,0 +1,16 @@
+{
+  "tournaments": [
+    {
+      "id": "3v3-2024",
+      "name": "Torneo 3v3",
+      "type": "3v3",
+      "status": "active",
+      "teams_count": 8,
+      "players_count": 24,
+      "start_date": "2024-08-01",
+      "end_date": "2024-12-31",
+      "description": "Torneo de equipos 3v3 del Desastre Squad",
+      "data_file": "tournament-3v3.json"
+    }
+  ]
+} 

@@ -1,0 +1,553 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Torneos - Desastre Squad</title>
+    <link href="styles.css" rel="stylesheet">
+    <script src="config.js"></script>
+</head>
+<body class="bg-gradient-to-br from-gray-900 via-purple-900 to-gray-900 min-h-screen">
+    <div class="flex h-screen">
+        <!-- Sidebar -->
+        <div class="w-64 bg-black/20 backdrop-blur-sm border-r border-white/10 flex flex-col">
+            <!-- Logo -->
+            <div class="p-6 border-b border-white/10">
+                <div class="flex items-center gap-3">
+                    <div class="w-8 h-8 bg-red-600 rounded-lg flex items-center justify-center">
+                        <svg class="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"></path>
+                        </svg>
+                    </div>
+                    <div>
+                        <h1 class="text-lg font-bold text-white">Desastre Squad</h1>
+                        <p class="text-xs text-gray-400">Age of Empires II</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Navigation -->
+            <nav class="flex-1 p-6 space-y-6">
+                <div class="space-y-2">
+                    <div class="flex items-center justify-between text-gray-400 text-sm font-medium">
+                        <span>RANKINGS</span>
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 15l7-7 7 7"></path>
+                        </svg>
+                    </div>
+                    <div class="space-y-1">
+                        <a href="ladder.html" class="flex items-center gap-3 px-3 py-2 text-gray-300 hover:text-white hover:bg-white/5 rounded-lg transition-colors">
+                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6"></path>
+                            </svg>
+                            <span>ELO Leaderboard</span>
+                        </a>
+                    </div>
+                </div>
+
+                <div class="space-y-2">
+                    <div class="flex items-center justify-between text-gray-400 text-sm font-medium">
+                        <span>STATS</span>
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 15l7-7 7 7"></path>
+                        </svg>
+                    </div>
+                    <div class="space-y-1">
+                        <a href="players.html" class="flex items-center gap-3 px-3 py-2 text-gray-300 hover:text-white hover:bg-white/5 rounded-lg transition-colors">
+                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"></path>
+                            </svg>
+                            <span>Player Stats</span>
+                        </a>
+                    </div>
+                </div>
+
+                <div class="space-y-2">
+                    <div class="flex items-center justify-between text-gray-400 text-sm font-medium">
+                        <span>COMPETITION</span>
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 15l7-7 7 7"></path>
+                        </svg>
+                    </div>
+                    <div class="space-y-1">
+                        <a href="tournaments.html" class="flex items-center gap-3 px-3 py-2 text-white bg-white/10 rounded-lg transition-colors">
+                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"></path>
+                            </svg>
+                            <span>Torneos</span>
+                        </a>
+                    </div>
+                </div>
+            </nav>
+
+            <!-- Status -->
+            <div class="mt-8 p-4 bg-white/5 rounded-lg border border-white/10">
+                <div class="text-center">
+                    <div class="text-2xl font-bold text-white mb-1">24</div>
+                    <div class="text-xs text-gray-400">Players Online</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Main Content -->
+        <div class="flex-1 flex flex-col">
+            <!-- Top Bar -->
+            <div class="h-16 bg-black/20 backdrop-blur-sm border-b border-white/10 flex items-center justify-between px-6">
+                <div class="flex items-center gap-4">
+                    <h2 class="text-xl font-bold text-white">🏆 Torneos</h2>
+                    <div class="flex items-center gap-2 text-sm text-gray-400">
+                        <div class="w-2 h-2 bg-green-400 rounded-full"></div>
+                        <span>Live Data</span>
+                    </div>
+                </div>
+                
+                <div class="flex items-center gap-4">
+                    <div class="text-right">
+                        <div class="text-sm text-gray-400">Last Update</div>
+                        <div id="last-update" class="text-sm font-medium text-white">--</div>
+                    </div>
+                    <button id="refresh-btn" class="flex items-center gap-2 px-4 py-2 bg-red-600 hover:bg-red-700 text-white rounded-lg transition-colors">
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"></path>
+                        </svg>
+                        <span>Refresh</span>
+                    </button>
+                </div>
+            </div>
+
+            <!-- Content Area -->
+            <div class="flex-1 p-6 overflow-auto">
+                <!-- Loading State -->
+                <div id="loading-state" class="flex items-center justify-center h-full">
+                    <div class="text-center">
+                        <div class="inline-flex items-center px-4 py-2 font-semibold leading-6 text-white shadow rounded-md">
+                            <svg class="animate-spin -ml-1 mr-3 h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                                <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                                <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                            </svg>
+                            Loading Tournaments...
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Error State -->
+                <div id="error-state" class="flex items-center justify-center h-full hidden">
+                    <div class="text-center">
+                        <div class="mx-auto flex items-center justify-center h-12 w-12 rounded-full bg-red-100 mb-4">
+                            <svg class="h-6 w-6 text-red-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4c-.77-.833-1.964-.833-2.732 0L3.732 16.5c-.77.833.192 2.5 1.732 2.5z"></path>
+                            </svg>
+                        </div>
+                        <h3 class="text-lg font-medium text-white mb-2">Error al cargar</h3>
+                        <p class="text-gray-400 mb-6">No se pudieron cargar los torneos</p>
+                        <button id="retry-btn" class="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-white bg-red-600 hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500 transition-colors duration-200">
+                            <svg class="-ml-1 mr-2 h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"></path>
+                            </svg>
+                            Reintentar
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Tournaments Content -->
+                <div id="tournaments-content" class="hidden">
+                    <!-- Stats Header -->
+                    <div class="mb-6 bg-white/5 rounded-lg p-4 border border-white/10">
+                        <div class="flex items-center justify-between">
+                            <div>
+                                <h2 class="text-lg font-semibold text-white">Tournament Statistics</h2>
+                                <p class="text-sm text-gray-400">Estadísticas de torneos del Desastre Squad</p>
+                            </div>
+                            <div class="text-right">
+                                <p class="text-sm text-gray-400">Total Tournaments</p>
+                                <p id="total-tournaments" class="text-sm font-medium text-white">--</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Tournaments List -->
+                    <div id="tournaments-list" class="space-y-6">
+                        <!-- Tournament cards will be generated here -->
+                    </div>
+
+                    <!-- Tournament Details (hidden by default) -->
+                    <div id="tournament-details" class="hidden">
+                        <!-- Back Button -->
+                        <div class="mb-6">
+                            <button id="back-to-tournaments" class="flex items-center gap-2 px-4 py-2 bg-gray-600 hover:bg-gray-700 text-white rounded-lg transition-colors">
+                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"></path>
+                                </svg>
+                                <span>Volver a Torneos</span>
+                            </button>
+                        </div>
+
+                        <!-- Tournament Info -->
+                        <div class="mb-6 bg-white/5 rounded-lg p-4 border border-white/10">
+                            <div class="flex items-center justify-between">
+                                <div>
+                                    <h2 id="tournament-name" class="text-lg font-semibold text-white">🏆 Torneo</h2>
+                                    <p id="tournament-description" class="text-sm text-gray-400">Descripción del torneo</p>
+                                </div>
+                                <div class="text-right">
+                                    <p class="text-sm text-gray-400">Total Teams</p>
+                                    <p id="total-teams" class="text-sm font-medium text-white">--</p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Teams Grid -->
+                        <div id="teams-grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+                            <!-- Team cards will be generated here -->
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let tournamentsList = [];
+        let currentTournament = null;
+        let tournamentData = null;
+
+        // Get player photo filename
+        function getPlayerPhoto(playerName) {
+            const photoMap = {
+                'sszafranko': 'sszafranko.png',
+                'Lugut': 'placeholder-avatar.png',
+                'SoLid': 'solid.jpeg',
+                'Jonny': 'jonny.jpeg',
+                'RELP': 'relp.png',
+                'Reymon': 'reymon.png',
+                'Danny': 'placeholder-avatar.png',
+                'Ze Pequeño': 'ze pequeño.png',
+                'Lauritop': 'lauritop.png',
+                'Herno': 'herno.png',
+                'Eze': 'placeholder-avatar.png',
+                'Anakin': 'anakin.png',
+                'Chetti': 'chetti.png',
+                'TheRazor': 'therazor.png',
+                'Pepe': 'pepe.png',
+                'Fran Camet': 'fran camet.png',
+                'Nachorga': 'nachorga.png',
+                'Marco Van Basten': 'marco van basten.png',
+                'Nasper': 'nasper.png',
+                'Alejo Camet': 'alejo camet.png',
+                'War Machine': 'placeholder-avatar.png',
+                'Dylan': 'dylan.jpeg',
+                'Patocuesta': 'patocuesta.png',
+                'ThePipi': 'thepipi.png',
+                'Nomadplayer': 'placeholder-avatar.png',
+                'Joanel': 'placeholder-avatar.png'
+            };
+            
+            return photoMap[playerName] || 'placeholder-avatar.png';
+        }
+
+        // Load tournaments list
+        async function loadTournamentsList() {
+            try {
+                const response = await fetch('tournaments-list.json');
+                const data = await response.json();
+                tournamentsList = data.tournaments;
+                console.log('Tournaments list loaded:', tournamentsList);
+                return tournamentsList;
+            } catch (error) {
+                console.error('Error loading tournaments list:', error);
+                return [];
+            }
+        }
+
+        // Load tournament data
+        async function loadTournamentData(tournamentId) {
+            try {
+                const tournament = tournamentsList.find(t => t.id === tournamentId);
+                if (!tournament) {
+                    throw new Error('Tournament not found');
+                }
+
+                const response = await fetch(tournament.data_file);
+                const data = await response.json();
+                tournamentData = data.tournament;
+                currentTournament = tournament;
+                console.log('Tournament data loaded:', tournamentData);
+                return tournamentData;
+            } catch (error) {
+                console.error('Error loading tournament data:', error);
+                return null;
+            }
+        }
+
+        // Display tournaments list
+        function displayTournamentsList() {
+            console.log('Starting to display tournaments list...');
+            const tournamentsListElement = document.getElementById('tournaments-list');
+            
+            if (!tournamentsListElement || !tournamentsList.length) {
+                console.error('Could not find tournaments-list element or no tournaments data');
+                return;
+            }
+
+            // Generate tournament cards
+            const tournamentCards = tournamentsList.map((tournament) => {
+                const statusColor = tournament.status === 'active' ? 'text-green-400' : 'text-gray-400';
+                const statusBg = tournament.status === 'active' ? 'bg-green-500/20' : 'bg-gray-500/20';
+                
+                return `
+                    <div class="bg-black/20 backdrop-blur-sm rounded-xl border border-white/10 overflow-hidden hover:scale-105 transition-all duration-300 cursor-pointer" onclick="showTournamentDetails('${tournament.id}')">
+                        <div class="p-6">
+                            <!-- Tournament Header -->
+                            <div class="flex items-center gap-4 mb-4">
+                                <div class="w-12 h-12 bg-purple-600/20 rounded-lg flex items-center justify-center">
+                                    <svg class="w-6 h-6 text-purple-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"></path>
+                                    </svg>
+                                </div>
+                                <div class="flex-1">
+                                    <h3 class="text-lg font-bold text-white">${tournament.name}</h3>
+                                    <p class="text-sm text-gray-400">${tournament.description}</p>
+                                </div>
+                                <div class="text-right">
+                                    <div class="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium ${statusBg} ${statusColor}">
+                                        ${tournament.status === 'active' ? 'Activo' : 'Inactivo'}
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <!-- Tournament Stats -->
+                            <div class="grid grid-cols-3 gap-4">
+                                <div class="text-center">
+                                    <div class="text-2xl font-bold text-white">${tournament.teams_count}</div>
+                                    <div class="text-xs text-gray-400">Equipos</div>
+                                </div>
+                                <div class="text-center">
+                                    <div class="text-2xl font-bold text-white">${tournament.players_count}</div>
+                                    <div class="text-xs text-gray-400">Jugadores</div>
+                                </div>
+                                <div class="text-center">
+                                    <div class="text-2xl font-bold text-white">${tournament.type}</div>
+                                    <div class="text-xs text-gray-400">Formato</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                `;
+            }).join('');
+            
+            tournamentsListElement.innerHTML = tournamentCards;
+        }
+
+        // Show tournament details
+        async function showTournamentDetails(tournamentId) {
+            console.log('Showing tournament details for:', tournamentId);
+            
+            const tournamentsListElement = document.getElementById('tournaments-list');
+            const tournamentDetailsElement = document.getElementById('tournament-details');
+            
+            if (!tournamentsListElement || !tournamentDetailsElement) {
+                console.error('Could not find required elements');
+                return;
+            }
+
+            // Load tournament data
+            await loadTournamentData(tournamentId);
+            
+            if (!tournamentData || !currentTournament) {
+                console.error('Failed to load tournament data');
+                return;
+            }
+
+            // Update tournament info
+            document.getElementById('tournament-name').textContent = `🏆 ${currentTournament.name}`;
+            document.getElementById('tournament-description').textContent = `${currentTournament.teams_count} equipos • Formato ${currentTournament.type} • Estado: ${currentTournament.status === 'active' ? 'Activo' : 'Inactivo'}`;
+            document.getElementById('total-teams').textContent = currentTournament.teams_count;
+
+            // Display teams
+            displayTeams();
+
+            // Show tournament details, hide tournaments list
+            tournamentsListElement.classList.add('hidden');
+            tournamentDetailsElement.classList.remove('hidden');
+        }
+
+        // Show tournaments list
+        function showTournamentsList() {
+            console.log('Showing tournaments list');
+            
+            const tournamentsListElement = document.getElementById('tournaments-list');
+            const tournamentDetailsElement = document.getElementById('tournament-details');
+            
+            if (!tournamentsListElement || !tournamentDetailsElement) {
+                console.error('Could not find required elements');
+                return;
+            }
+
+            // Show tournaments list, hide tournament details
+            tournamentsListElement.classList.remove('hidden');
+            tournamentDetailsElement.classList.add('hidden');
+        }
+
+        // Show team details
+        function showTeamDetails(tournamentId, teamId) {
+            console.log('Showing team details for tournament:', tournamentId, 'team:', teamId);
+            window.location.href = `team-details.html?tournament=${tournamentId}&team=${teamId}`;
+        }
+
+        // Display teams
+        function displayTeams() {
+            console.log('Starting to display teams...');
+            const teamsGrid = document.getElementById('teams-grid');
+            
+            if (!teamsGrid || !tournamentData) {
+                console.error('Could not find teams-grid element or tournament data');
+                return;
+            }
+
+            // Generate team cards
+            const teamCards = tournamentData.teams.map((team) => {
+                const captainPhoto = getPlayerPhoto(team.captain);
+                const player2Photo = getPlayerPhoto(team.player2);
+                const player3Photo = getPlayerPhoto(team.player3);
+                
+                return `
+                    <div class="bg-black/20 backdrop-blur-sm rounded-xl border border-white/10 overflow-hidden hover:scale-105 transition-all duration-300 cursor-pointer" onclick="showTeamDetails('${currentTournament.id}', ${team.id})">
+                        <div class="p-4">
+                            <!-- Team Header -->
+                            <div class="flex items-center gap-3 mb-4">
+                                <div class="w-10 h-10 bg-purple-600/20 rounded-lg flex items-center justify-center">
+                                    <span class="text-lg font-bold text-purple-400">#${team.id}</span>
+                                </div>
+                                <div class="flex-1">
+                                    <h3 class="text-base font-bold text-white">Team ${team.id}</h3>
+                                    <p class="text-xs text-gray-400">${currentTournament.type} Tournament</p>
+                                </div>
+                                <div class="text-right">
+                                    <div class="text-xs text-gray-400">Status</div>
+                                    <div class="text-xs font-medium text-green-400">Active</div>
+                                </div>
+                            </div>
+                            
+                            <!-- Players -->
+                            <div class="space-y-3">
+                                <!-- Captain -->
+                                <div class="flex items-center gap-3 p-2 bg-yellow-500/10 rounded-lg border border-yellow-500/20">
+                                    <div class="w-8 h-8 rounded-full overflow-hidden border-2 border-yellow-500/50">
+                                        <img src="photos/${captainPhoto}" alt="${team.captain}" class="w-full h-full object-cover" onerror="this.src='placeholder-avatar.png'">
+                                    </div>
+                                    <div class="flex-1">
+                                        <div class="text-sm font-bold text-yellow-400">${team.captain}</div>
+                                        <div class="text-xs text-gray-400">Captain</div>
+                                    </div>
+                                </div>
+                                
+                                <!-- Player 2 -->
+                                <div class="flex items-center gap-3 p-2 bg-pink-500/10 rounded-lg border border-pink-500/20">
+                                    <div class="w-8 h-8 rounded-full overflow-hidden border-2 border-pink-500/50">
+                                        <img src="photos/${player2Photo}" alt="${team.player2}" class="w-full h-full object-cover" onerror="this.src='placeholder-avatar.png'">
+                                    </div>
+                                    <div class="flex-1">
+                                        <div class="text-sm font-bold text-pink-400">${team.player2}</div>
+                                        <div class="text-xs text-gray-400">Player 2</div>
+                                    </div>
+                                </div>
+                                
+                                <!-- Player 3 -->
+                                <div class="flex items-center gap-3 p-2 bg-blue-500/10 rounded-lg border border-blue-500/20">
+                                    <div class="w-8 h-8 rounded-full overflow-hidden border-2 border-blue-500/50">
+                                        <img src="photos/${player3Photo}" alt="${team.player3}" class="w-full h-full object-cover" onerror="this.src='placeholder-avatar.png'">
+                                    </div>
+                                    <div class="flex-1">
+                                        <div class="text-sm font-bold text-blue-400">${team.player3}</div>
+                                        <div class="text-xs text-gray-400">Player 3</div>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <!-- View Details Button -->
+                            <div class="mt-4 pt-3 border-t border-white/10">
+                                <div class="flex items-center justify-center gap-2 text-sm text-purple-400 hover:text-purple-300 transition-colors">
+                                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path>
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"></path>
+                                    </svg>
+                                    <span>Ver Detalles</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                `;
+            }).join('');
+            
+            teamsGrid.innerHTML = teamCards;
+        }
+
+        // Initialize page
+        document.addEventListener('DOMContentLoaded', function() {
+            console.log('DOM loaded, initializing tournaments...');
+            const loadingState = document.getElementById('loading-state');
+            const errorState = document.getElementById('error-state');
+            const tournamentsContent = document.getElementById('tournaments-content');
+            const lastUpdate = document.getElementById('last-update');
+            const refreshBtn = document.getElementById('refresh-btn');
+            const retryBtn = document.getElementById('retry-btn');
+
+            if (!loadingState || !errorState || !tournamentsContent || !lastUpdate) {
+                console.error('Could not find required elements');
+                return;
+            }
+
+            // Refresh button
+            if (refreshBtn) {
+                refreshBtn.addEventListener('click', function() {
+                    console.log('Refresh button clicked');
+                    loadTournaments();
+                });
+            }
+
+            // Back to tournaments button
+            const backToTournamentsBtn = document.getElementById('back-to-tournaments');
+            if (backToTournamentsBtn) {
+                backToTournamentsBtn.addEventListener('click', function() {
+                    console.log('Back to tournaments clicked');
+                    showTournamentsList();
+                });
+            }
+
+            // Retry button
+            if (retryBtn) {
+                retryBtn.addEventListener('click', function() {
+                    console.log('Retry button clicked');
+                    loadTournaments();
+                });
+            }
+
+            // Load tournaments function
+            async function loadTournaments() {
+                console.log('Loading tournaments...');
+                loadingState.classList.remove('hidden');
+                errorState.classList.add('hidden');
+                tournamentsContent.classList.add('hidden');
+
+                try {
+                    await loadTournamentsList();
+                    displayTournamentsList();
+                    
+                    lastUpdate.textContent = new Date().toLocaleTimeString();
+                    
+                    loadingState.classList.add('hidden');
+                    tournamentsContent.classList.remove('hidden');
+                    console.log('Tournaments loaded successfully');
+                } catch (error) {
+                    console.error('Error loading tournaments:', error);
+                    loadingState.classList.add('hidden');
+                    errorState.classList.remove('hidden');
+                }
+            }
+
+            // Initial load
+            loadTournaments();
+        });
+    </script>
+</body>
+</html> 
