@@ -524,6 +524,29 @@ class TeamStatsApp {
 
 
 
+    // Obtiene el ELO de 1v1 Random Map desde la API oficial de AoE2 (Relic),
+    // a través de la función serverless /api/elo (evita problemas de CORS).
+    // Devuelve el ELO como string, o null si no se encontró.
+    async fetchEloFromRelic(userId) {
+        const controller = new AbortController();
+        const timeoutId = setTimeout(() => controller.abort(), 15000);
+        try {
+            const response = await fetch(`/api/elo?profile_id=${encodeURIComponent(userId)}`, {
+                signal: controller.signal
+            });
+            if (!response.ok) {
+                throw new Error(`HTTP error! status: ${response.status}`);
+            }
+            const data = await response.json();
+            if (data && data.rating) {
+                return String(data.rating);
+            }
+            return null;
+        } finally {
+            clearTimeout(timeoutId);
+        }
+    }
+
     // Funciones para interactuar con Supabase
     async fetchEloFromSupabase(playerName) {
         try {
@@ -656,88 +679,19 @@ class TeamStatsApp {
         this.updateEloDisplay(playerName, 'Buscando...');
         
         try {
-            // Usar un proxy CORS más confiable
-            const proxyUrl = 'https://api.allorigins.win/raw?url=';
-            const targetUrl = `https://www.aoe2insights.com/user/${userId}/`;
-            console.log(`Intentando obtener ELO de: ${targetUrl}`);
-            
-            // Timeout de 15 segundos
-            const controller = new AbortController();
-            const timeoutId = setTimeout(() => controller.abort(), 15000);
-            
-            const response = await fetch(proxyUrl + encodeURIComponent(targetUrl), {
-                signal: controller.signal
-            });
-            
-            clearTimeout(timeoutId);
-            
-            if (!response.ok) {
-                throw new Error(`HTTP error! status: ${response.status}`);
-            }
-            
-            const html = await response.text();
-            console.log(`📄 HTML recibido para ${playerName}, longitud:`, html.length);
-            
-            // Buscar el ELO de 1v1 Random Map
-            console.log(`🔍 Buscando ELO en HTML para ${playerName}...`);
-            
-            // Patrón 1: Buscar "1v1 RM" seguido de "Rating"
-            const eloMatch = html.match(/1v1 RM[\s\S]*?Rating\s+(\d+)/);
-            if (eloMatch) {
-                const elo = eloMatch[1];
-                console.log(`✅ ELO encontrado para ${playerName}: ${elo} (patrón 1)`);
-                
-                // Solo guardar en Supabase si es un ELO válido
-                if (elo && elo !== 'No encontrado' && elo !== 'Error' && elo !== 'Timeout') {
-                    this.eloCache[playerName] = elo;
-                    this.saveEloCache(); // Guardar en localStorage como respaldo
-                    await this.saveEloToSupabase(playerName, elo); // Guardar en Supabase
-                    this.updateEloDisplay(playerName, elo);
-                    console.log(`💾 ELO guardado en Supabase para ${playerName}: ${elo}`);
-                } else {
-                    console.log(`❌ ELO inválido para ${playerName}: ${elo}`);
-                    this.updateEloDisplay(playerName, 'No encontrado');
-                }
+            console.log(`Obteniendo ELO de la API oficial para ${playerName} (profile ${userId})`);
+            const elo = await this.fetchEloFromRelic(userId);
+
+            if (elo && elo !== 'No encontrado' && elo !== 'Error' && elo !== 'Timeout') {
+                this.eloCache[playerName] = elo;
+                this.saveEloCache(); // Guardar en localStorage como respaldo
+                await this.saveEloToSupabase(playerName, elo); // Guardar en Supabase
+                this.updateEloDisplay(playerName, elo);
+                console.log(`💾 ELO guardado para ${playerName}: ${elo}`);
             } else {
-                // Patrón 2: Buscar "Rating" cerca de "1v1 RM"
-                const ratingMatch = html.match(/Rating\s+(\d+)/);
-                if (ratingMatch) {
-                    const elo = ratingMatch[1];
-                    console.log(`ELO encontrado (patrón alternativo) para ${playerName}: ${elo}`);
-                    
-                    if (elo && elo !== 'No encontrado' && elo !== 'Error' && elo !== 'Timeout') {
-                        this.eloCache[playerName] = elo;
-                        this.saveEloCache();
-                        await this.saveEloToSupabase(playerName, elo);
-                        this.updateEloDisplay(playerName, elo);
-                        console.log(`ELO actualizado en Supabase para ${playerName}: ${elo}`);
-                    } else {
-                        console.log(`ELO inválido para ${playerName}: ${elo}`);
-                        this.updateEloDisplay(playerName, 'No encontrado');
-                    }
-                } else {
-                    // Patrón 3: Buscar cualquier número después de "Rating"
-                    const anyRatingMatch = html.match(/Rating[^0-9]*(\d+)/);
-                    if (anyRatingMatch) {
-                        const elo = anyRatingMatch[1];
-                        console.log(`ELO encontrado (patrón genérico) para ${playerName}: ${elo}`);
-                        
-                        if (elo && elo !== 'No encontrado' && elo !== 'Error' && elo !== 'Timeout') {
-                            this.eloCache[playerName] = elo;
-                            this.saveEloCache();
-                            await this.saveEloToSupabase(playerName, elo);
-                            this.updateEloDisplay(playerName, elo);
-                            console.log(`ELO actualizado en Supabase para ${playerName}: ${elo}`);
-                        } else {
-                            console.log(`ELO inválido para ${playerName}: ${elo}`);
-                            this.updateEloDisplay(playerName, 'No encontrado');
-                        }
-                    } else {
-                        console.log(`ELO no encontrado para ${playerName}`);
-                        this.updateEloDisplay(playerName, 'No encontrado');
-                        // NO guardar "No encontrado" en Supabase
-                    }
-                }
+                console.log(`❌ ELO no encontrado para ${playerName}`);
+                this.updateEloDisplay(playerName, 'No encontrado');
+                // NO guardar "No encontrado" en Supabase
             }
         } catch (error) {
             if (error.name === 'AbortError') {
@@ -779,69 +733,21 @@ class TeamStatsApp {
         }
 
         try {
-            // Usar un proxy CORS más confiable
-            const proxyUrl = 'https://api.allorigins.win/raw?url=';
-            const targetUrl = `https://www.aoe2insights.com/user/${userId}/`;
-            console.log('Intentando obtener ELO de:', targetUrl);
-            
-            // Timeout de 15 segundos
-            const controller = new AbortController();
-            const timeoutId = setTimeout(() => controller.abort(), 15000);
-            
-            const response = await fetch(proxyUrl + encodeURIComponent(targetUrl), {
-                signal: controller.signal
-            });
-            
-            clearTimeout(timeoutId);
-            
-            if (!response.ok) {
-                throw new Error(`HTTP error! status: ${response.status}`);
-            }
-            
-            const html = await response.text();
-            console.log('HTML recibido, longitud:', html.length);
-            
-            // Buscar el ELO de 1v1 Random Map
-            console.log('Buscando ELO en HTML...');
-            
-            // Patrón 1: Buscar "1v1 RM" seguido de "Rating"
-            const eloMatch = html.match(/1v1 RM[\s\S]*?Rating\s+(\d+)/);
-            if (eloMatch) {
-                const elo = eloMatch[1];
+            console.log('Obteniendo ELO de la API oficial para:', playerName, '(profile', userId + ')');
+            const elo = await this.fetchEloFromRelic(userId);
+
+            if (elo && elo !== 'No encontrado' && elo !== 'Error' && elo !== 'Timeout') {
                 this.eloCache[playerName] = elo;
                 this.saveEloCache(); // Guardar en localStorage como respaldo
                 await this.saveEloToSupabase(playerName, elo); // Guardar en Supabase
                 this.updateEloDisplay(playerName, elo);
                 console.log(`ELO de ${playerName}: ${elo}`);
             } else {
-                // Patrón 2: Buscar "Rating" cerca de "1v1 RM"
-                const ratingMatch = html.match(/Rating\s+(\d+)/);
-                if (ratingMatch) {
-                    const elo = ratingMatch[1];
-                    this.eloCache[playerName] = elo;
-                    this.saveEloCache(); // Guardar en localStorage como respaldo
-                    await this.saveEloToSupabase(playerName, elo); // Guardar en Supabase
-                    this.updateEloDisplay(playerName, elo);
-                    console.log(`ELO de ${playerName}: ${elo} (patrón alternativo)`);
-                } else {
-                    // Patrón 3: Buscar cualquier número después de "Rating"
-                    const anyRatingMatch = html.match(/Rating[^0-9]*(\d+)/);
-                    if (anyRatingMatch) {
-                        const elo = anyRatingMatch[1];
-                        this.eloCache[playerName] = elo;
-                        this.saveEloCache(); // Guardar en localStorage como respaldo
-                        await this.saveEloToSupabase(playerName, elo); // Guardar en Supabase
-                        this.updateEloDisplay(playerName, elo);
-                        console.log(`ELO de ${playerName}: ${elo} (patrón genérico)`);
-                    } else {
-                        // No guardar "No encontrado" en Supabase, solo en caché local temporal
-                        this.eloCache[playerName] = 'No encontrado';
-                        this.saveEloCache(); // Guardar en localStorage como respaldo
-                        this.updateEloDisplay(playerName, 'No encontrado');
-                        console.log('ELO no encontrado para', playerName);
-                        console.log('Fragmento HTML relevante:', html.substring(html.indexOf('1v1 RM') - 100, html.indexOf('1v1 RM') + 500));
-                    }
-                }
+                // No guardar "No encontrado" en Supabase, solo en caché local temporal
+                this.eloCache[playerName] = 'No encontrado';
+                this.saveEloCache(); // Guardar en localStorage como respaldo
+                this.updateEloDisplay(playerName, 'No encontrado');
+                console.log('ELO no encontrado para', playerName);
             }
         } catch (error) {
             if (error.name === 'AbortError') {
@@ -849,10 +755,7 @@ class TeamStatsApp {
                 this.updateEloDisplay(playerName, 'Timeout');
             } else {
                 console.error('Error obteniendo ELO:', error);
-                
-                // Log del error específico
                 console.log('Error específico para', playerName, ':', error.message);
-                
                 this.updateEloDisplay(playerName, 'Error');
             }
         }
