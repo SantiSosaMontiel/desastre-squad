@@ -1,0 +1,9 @@
+[build]
+  publish = "."
+  functions = "netlify/functions"
+
+# El frontend llama a /api/elo; en Netlify lo redirige a la funcion serverless.
+[[redirects]]
+  from = "/api/elo"
+  to = "/.netlify/functions/elo"
+  status = 200

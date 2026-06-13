@@ -299,84 +299,34 @@
         // Function to fetch ELO from aoe2insights with retry logic
         async function fetchEloFromAoe2insights(playerName, userId, retryCount = 0) {
             try {
-                console.log(`Fetching ELO from aoe2insights for: ${playerName} (attempt ${retryCount + 1})`);
-                
-                // Lista de proxies más confiables
-                const proxyUrls = [
-                    'https://corsproxy.io/?',
-                    'https://api.codetabs.com/v1/proxy?url=',
-                    'https://thingproxy.freeboard.io/fetch/',
-                    'https://api.allorigins.win/raw?url='
-                ];
-                
-                const proxyUrl = proxyUrls[retryCount % proxyUrls.length];
-                const targetUrl = `https://www.aoe2insights.com/user/${userId}/`;
+                console.log(`Fetching ELO for: ${playerName} (profile ${userId}, attempt ${retryCount + 1})`);
+
                 const controller = new AbortController();
-                const timeoutId = setTimeout(() => controller.abort(), 20000);
-                
-                let fullUrl;
-                if (proxyUrl.includes('api.allorigins.win')) {
-                    fullUrl = proxyUrl + encodeURIComponent(targetUrl);
-                } else if (proxyUrl.includes('thingproxy.freeboard.io')) {
-                    fullUrl = proxyUrl + targetUrl;
-                } else if (proxyUrl.includes('corsproxy.io')) {
-                    fullUrl = proxyUrl + targetUrl;
-                } else {
-                    fullUrl = proxyUrl + targetUrl;
-                }
-                
-                console.log(`Trying proxy: ${proxyUrl}`);
-                
-                const response = await fetch(fullUrl, {
-                    signal: controller.signal,
-                    headers: {
-                        'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8',
-                        'Accept-Language': 'en-US,en;q=0.5',
-                        'Cache-Control': 'no-cache'
-                    }
+                const timeoutId = setTimeout(() => controller.abort(), 15000);
+
+                // Llama a la API oficial de AoE2 (Relic) vía la función serverless /api/elo
+                const response = await fetch(`/api/elo?profile_id=${encodeURIComponent(userId)}`, {
+                    signal: controller.signal
                 });
-                
+
                 clearTimeout(timeoutId);
-                
+
                 if (!response.ok) {
                     throw new Error(`HTTP error! status: ${response.status}`);
                 }
-                
-                const html = await response.text();
-                console.log(`✅ Successfully fetched HTML from ${proxyUrl}`);
-                console.log(`📄 HTML preview (first 1000 chars): ${html.substring(0, 1000)}`);
-                
-                // Usar la misma lógica simple que funciona en ladder.html
-                
-                // Buscar el ELO de 1v1 Random Map
-                const eloMatch = html.match(/1v1 RM[\s\S]*?Rating\s+(\d+)/);
-                if (eloMatch) {
-                    console.log(`✅ ELO found for ${playerName}: ${eloMatch[1]}`);
-                    return eloMatch[1];
-                }
-                
-                // Patrón alternativo
-                const ratingMatch = html.match(/Rating\s+(\d+)/);
-                if (ratingMatch) {
-                    console.log(`✅ ELO found (alt pattern) for ${playerName}: ${ratingMatch[1]}`);
-                    return ratingMatch[1];
-                }
-                
-                // Patrón genérico
-                const anyRatingMatch = html.match(/Rating[^0-9]*(\d+)/);
-                if (anyRatingMatch) {
-                    console.log(`✅ ELO found (generic pattern) for ${playerName}: ${anyRatingMatch[1]}`);
-                    return anyRatingMatch[1];
-                }
-                
 
-                
-                console.log(`❌ No ELO pattern found for ${playerName}`);
+                const data = await response.json();
+                if (data && data.rating) {
+                    console.log(`✅ ELO found for ${playerName}: ${data.rating}`);
+                    return String(data.rating);
+                }
+
+                console.log(`❌ No ELO found for ${playerName}`);
                 return null;
-                
+
             } catch (error) {
-                console.error(`Error fetching ELO from aoe2insights for ${playerName}:`, error);
-                
+                console.error(`Error fetching ELO for ${playerName}:`, error);
+
                 // Solo reintentar si es un error de red o timeout
                 if (retryCount < 2 && (
                     error.name === 'AbortError' || 
@@ -389,7 +339,7 @@
                     await new Promise(resolve => setTimeout(resolve, 3000));
                     return fetchEloFromAoe2insights(playerName, userId, retryCount + 1);
                 }
-                
+
                 console.log(`❌ Failed to fetch ELO for ${playerName} after ${retryCount + 1} attempts`);
                 return null;
             }

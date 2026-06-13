@@ -259,69 +259,40 @@
         // Function to fetch ELO from aoe2insights with retry logic (moved to global scope)
         async function fetchEloFromAoe2insights(playerName, userId, retryCount = 0) {
             try {
-                console.log(`Fetching ELO from aoe2insights for: ${playerName} (attempt ${retryCount + 1})`);
-                
-                // Use different proxy URLs to avoid rate limiting
-                const proxyUrls = [
-                    'https://api.allorigins.win/raw?url=',
-                    'https://cors-anywhere.herokuapp.com/',
-                    'https://thingproxy.freeboard.io/fetch/'
-                ];
-                
-                const proxyUrl = proxyUrls[retryCount % proxyUrls.length];
-                const targetUrl = `https://www.aoe2insights.com/user/${userId}/`;
-                
+                console.log(`Fetching ELO for: ${playerName} (profile ${userId}, attempt ${retryCount + 1})`);
+
                 const controller = new AbortController();
-                const timeoutId = setTimeout(() => controller.abort(), 10000); // Reduced timeout
-                
-                const response = await fetch(proxyUrl + encodeURIComponent(targetUrl), {
-                    signal: controller.signal,
-                    headers: {
-                        'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36'
-                    }
+                const timeoutId = setTimeout(() => controller.abort(), 15000);
+
+                // Llama a la API oficial de AoE2 (Relic) vía la función serverless /api/elo
+                const response = await fetch(`/api/elo?profile_id=${encodeURIComponent(userId)}`, {
+                    signal: controller.signal
                 });
-                
+
                 clearTimeout(timeoutId);
-                
+
                 if (!response.ok) {
                     throw new Error(`HTTP error! status: ${response.status}`);
                 }
-                
-                const html = await response.text();
-                
-                // Buscar el ELO de 1v1 Random Map
-                const eloMatch = html.match(/1v1 RM[\s\S]*?Rating\s+(\d+)/);
-                if (eloMatch) {
-                    console.log(`✅ ELO found for ${playerName}: ${eloMatch[1]}`);
-                    return eloMatch[1];
+
+                const data = await response.json();
+                if (data && data.rating) {
+                    console.log(`✅ ELO found for ${playerName}: ${data.rating}`);
+                    return String(data.rating);
                 }
-                
-                // Patrón alternativo
-                const ratingMatch = html.match(/Rating\s+(\d+)/);
-                if (ratingMatch) {
-                    console.log(`✅ ELO found (alt pattern) for ${playerName}: ${ratingMatch[1]}`);
-                    return ratingMatch[1];
-                }
-                
-                // Patrón genérico
-                const anyRatingMatch = html.match(/Rating[^0-9]*(\d+)/);
-                if (anyRatingMatch) {
-                    console.log(`✅ ELO found (generic pattern) for ${playerName}: ${anyRatingMatch[1]}`);
-                    return anyRatingMatch[1];
-                }
-                
-                console.log(`❌ No ELO pattern found for ${playerName}`);
+
+                console.log(`❌ No ELO found for ${playerName}`);
                 return null;
             } catch (error) {
-                console.error(`Error fetching ELO from aoe2insights for ${playerName}:`, error);
-                
+                console.error(`Error fetching ELO for ${playerName}:`, error);
+
                 // Retry logic
                 if (retryCount < 2 && (error.name === 'AbortError' || error.message.includes('fetch'))) {
                     console.log(`🔄 Retrying for ${playerName} in 3 seconds...`);
                     await new Promise(resolve => setTimeout(resolve, 3000));
                     return fetchEloFromAoe2insights(playerName, userId, retryCount + 1);
                 }
-                
+
                 return null;
             }
         }
