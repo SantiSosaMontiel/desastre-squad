@@ -70,4 +70,48 @@ const SUPABASE_CONFIG = {
 
 ### Error de conexión:
 - Verifica que la URL y key sean correctas
-- Revisa la consola del navegador para errores específicos 
+- Revisa la consola del navegador para errores específicos
+
+## 📅 Tablas para el Matchmaking de torneos
+
+El matchmaking (disponibilidad de equipos y partidos confirmados) usa dos tablas.
+Ejecutá este SQL en el **SQL Editor** de Supabase una sola vez:
+
+```sql
+-- Disponibilidad por equipo: una fila por (torneo, equipo, fecha, franja)
+create table if not exists tournament_availability (
+  id bigint generated always as identity primary key,
+  tournament_id text not null,
+  team_id int not null,
+  date date not null,
+  slot text not null,
+  created_at timestamptz default now(),
+  unique (tournament_id, team_id, date, slot)
+);
+
+alter table tournament_availability enable row level security;
+
+create policy "acceso publico tournament_availability"
+on tournament_availability for all to anon
+using (true) with check (true);
+
+-- Partidos confirmados
+create table if not exists tournament_matches (
+  id bigint generated always as identity primary key,
+  tournament_id text not null,
+  team_a_id int not null,
+  team_b_id int not null,
+  date date not null,
+  slot text not null,
+  status text default 'confirmed',
+  created_at timestamptz default now()
+);
+
+alter table tournament_matches enable row level security;
+
+create policy "acceso publico tournament_matches"
+on tournament_matches for all to anon
+using (true) with check (true);
+```
+
+Franjas horarias (`slot`): `tarde` (15–19), `noche_temprano` (19–22), `noche_tarde` (22–01). 

@@ -215,7 +215,7 @@
             'Dylan': '3582825',
             'Patocuesta': '1100546',
             'ThePipi': '2408832',
-            'Nomadplayer': 'placeholder',
+            'Nomadplayer': '3995942',
             'Joanel': 'placeholder'
         };
 
@@ -639,9 +639,21 @@
             }
 
             try {
-                // Load tournament data
-                console.log('Fetching tournament data from: tournament-3v3.json');
-                const tournamentResponse = await fetch(`tournament-3v3.json`);
+                // Resolver el archivo de datos del torneo desde la lista (soporta varios torneos)
+                let dataFile = 'tournament-3v3.json';
+                try {
+                    const listResponse = await fetch('tournaments-list.json');
+                    const listData = await listResponse.json();
+                    const tournamentEntry = listData.tournaments.find(t => t.id === tournamentId);
+                    if (tournamentEntry && tournamentEntry.data_file) {
+                        dataFile = tournamentEntry.data_file;
+                    }
+                } catch (e) {
+                    console.warn('No se pudo resolver el data_file, usando 3v3 por defecto', e);
+                }
+
+                console.log('Fetching tournament data from:', dataFile);
+                const tournamentResponse = await fetch(dataFile);
                 
                 if (!tournamentResponse.ok) {
                     throw new Error(`HTTP error! status: ${tournamentResponse.status}`);
@@ -659,12 +671,12 @@
                     return;
                 }
 
-                // Load player ELOs
+                // Load player ELOs (soporta equipos de 2 o 3 jugadores)
                 const players = [
                     { name: team.captain, role: 'captain' },
                     { name: team.player2, role: 'player2' },
                     { name: team.player3, role: 'player3' }
-                ];
+                ].filter(p => p.name);
 
                 console.log('Loading ELOs for players:', players);
                 const playersWithElos = await loadPlayerElos(players);
@@ -675,7 +687,7 @@
 
                 // Update UI
                 console.log('Updating UI elements...');
-                document.getElementById('team-name').textContent = `Team ${team.id}`;
+                document.getElementById('team-name').textContent = team.name || `Team ${team.id}`;
                 document.getElementById('tournament-name').textContent = tournamentData.tournament.name;
                 document.getElementById('team-elo').textContent = calculateTeamElo(playersWithPositions);
                 document.getElementById('team-position').textContent = `#${team.id}`;
