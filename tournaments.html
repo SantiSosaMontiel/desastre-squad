@@ -196,8 +196,28 @@
                             </div>
                         </div>
 
-                        <!-- Tournament Links -->
+                        <!-- Matchmaking CTA -->
                         <div class="mb-6">
+                            <a id="matchmaking-link" href="#" class="flex items-center justify-between gap-3 bg-red-600/90 hover:bg-red-600 rounded-xl border border-red-400/30 p-4 transition-colors">
+                                <div class="flex items-center gap-3">
+                                    <div class="w-10 h-10 bg-white/15 rounded-lg flex items-center justify-center">
+                                        <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"></path>
+                                        </svg>
+                                    </div>
+                                    <div>
+                                        <h4 class="text-sm font-bold text-white">📅 Matchmaking</h4>
+                                        <p class="text-xs text-white/80">Cargá tu disponibilidad y coordiná los cruces</p>
+                                    </div>
+                                </div>
+                                <svg class="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
+                                </svg>
+                            </a>
+                        </div>
+
+                        <!-- Tournament Links -->
+                        <div id="tournament-links-section" class="mb-6">
                             <h3 class="text-md font-semibold text-white mb-4">🔗 Enlaces Útiles</h3>
                             <div id="tournament-links" class="grid grid-cols-1 md:grid-cols-3 gap-4">
                                 <!-- Tournament links will be generated here -->
@@ -371,6 +391,12 @@
             document.getElementById('tournament-description').textContent = `${currentTournament.teams_count} equipos • Formato ${currentTournament.type} • Estado: ${currentTournament.status === 'active' ? 'Activo' : 'Inactivo'}`;
             document.getElementById('total-teams').textContent = currentTournament.teams_count;
 
+            // Set matchmaking link
+            const matchmakingLink = document.getElementById('matchmaking-link');
+            if (matchmakingLink) {
+                matchmakingLink.href = `matchmaking.html?tournament=${currentTournament.id}`;
+            }
+
             // Display teams
             displayTeams();
 
@@ -415,37 +441,26 @@
                 return;
             }
 
-            const links = [
-                {
-                    name: '🏆 Cruces del Torneo',
-                    description: 'Ver el bracket y resultados en Challonge',
-                    url: 'https://challonge.com/es/x685du4w',
-                    icon: 'M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z',
-                    color: 'bg-blue-500/20 text-blue-400'
-                },
-                {
-                    name: '🗺️ Draft BO3',
-                    description: 'Configuración de mapas para Best of 3',
-                    url: 'https://aoe2cm.net/preset/CXTlX',
-                    icon: 'M9 20l-5.447-2.724A1 1 0 013 16.382V5.618a1 1 0 011.447-.894L9 7m0 13l6-3m-6 3V7m6 10l4.553 2.276A1 1 0 0021 18.382V7.618a1 1 0 00-1.447-.894L15 4m0 13V4m0 0L9 7',
-                    color: 'bg-green-500/20 text-green-400'
-                },
-                {
-                    name: '🗺️ Draft BO5',
-                    description: 'Configuración de mapas para Best of 5',
-                    url: 'https://aoe2cm.net/preset/pSMEc',
-                    icon: 'M9 20l-5.447-2.724A1 1 0 013 16.382V5.618a1 1 0 011.447-.894L9 7m0 13l6-3m-6 3V7m6 10l4.553 2.276A1 1 0 0021 18.382V7.618a1 1 0 00-1.447-.894L15 4m0 13V4m0 0L9 7',
-                    color: 'bg-purple-500/20 text-purple-400'
-                }
-            ];
+            // Los links se definen por torneo en su archivo JSON (tournamentData.links)
+            const links = (tournamentData && tournamentData.links) || [];
+            const linksSection = document.getElementById('tournament-links-section');
 
+            if (!links.length) {
+                if (linksSection) linksSection.classList.add('hidden');
+                linksContainer.innerHTML = '';
+                return;
+            }
+
+            if (linksSection) linksSection.classList.remove('hidden');
+
+            const defaultIcon = 'M13.828 10.172a4 4 0 00-5.656 0l-4 4a4 4 0 105.656 5.656l1.102-1.101';
             const linksHTML = links.map(link => `
                 <a href="${link.url}" target="_blank" rel="noopener noreferrer" class="bg-black/20 backdrop-blur-sm rounded-xl border border-white/10 overflow-hidden hover:scale-105 transition-all duration-300 hover:border-white/30">
                     <div class="p-4">
                         <div class="flex items-center gap-3">
-                            <div class="w-10 h-10 ${link.color} rounded-lg flex items-center justify-center">
+                            <div class="w-10 h-10 ${link.color || 'bg-blue-500/20 text-blue-400'} rounded-lg flex items-center justify-center">
                                 <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="${link.icon}"></path>
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="${link.icon || defaultIcon}"></path>
                                 </svg>
                             </div>
                             <div class="flex-1">
@@ -475,12 +490,35 @@
                 return;
             }
 
+            // Estilos por rol (captain primero, luego player2, player3...)
+            const roleStyles = [
+                { label: 'Captain', bg: 'bg-yellow-500/10', border: 'border-yellow-500/20', ring: 'border-yellow-500/50', text: 'text-yellow-400' },
+                { label: 'Player 2', bg: 'bg-pink-500/10', border: 'border-pink-500/20', ring: 'border-pink-500/50', text: 'text-pink-400' },
+                { label: 'Player 3', bg: 'bg-blue-500/10', border: 'border-blue-500/20', ring: 'border-blue-500/50', text: 'text-blue-400' }
+            ];
+
             // Generate team cards
             const teamCards = tournamentData.teams.map((team) => {
-                const captainPhoto = getPlayerPhoto(team.captain);
-                const player2Photo = getPlayerPhoto(team.player2);
-                const player3Photo = getPlayerPhoto(team.player3);
-                
+                // Soporta equipos de 2 o 3 jugadores (filtra los que no existan)
+                const teamPlayers = [team.captain, team.player2, team.player3].filter(Boolean);
+                const teamTitle = team.name || `Team ${team.id}`;
+                const subtitle = team.group ? `Grupo ${team.group} • ${currentTournament.type}` : `${currentTournament.type} Tournament`;
+
+                const playersHTML = teamPlayers.map((playerName, i) => {
+                    const style = roleStyles[i] || roleStyles[roleStyles.length - 1];
+                    const photo = getPlayerPhoto(playerName);
+                    return `
+                                <div class="flex items-center gap-3 p-2 ${style.bg} rounded-lg border ${style.border}">
+                                    <div class="w-8 h-8 rounded-full overflow-hidden border-2 ${style.ring}">
+                                        <img src="photos/${photo}" alt="${playerName}" class="w-full h-full object-cover" onerror="this.src='placeholder-avatar.png'">
+                                    </div>
+                                    <div class="flex-1">
+                                        <div class="text-sm font-bold ${style.text}">${playerName}</div>
+                                        <div class="text-xs text-gray-400">${style.label}</div>
+                                    </div>
+                                </div>`;
+                }).join('');
+
                 return `
                     <div class="bg-black/20 backdrop-blur-sm rounded-xl border border-white/10 overflow-hidden hover:scale-105 transition-all duration-300 cursor-pointer" onclick="showTeamDetails('${currentTournament.id}', ${team.id})">
                         <div class="p-4">
@@ -490,8 +528,8 @@
                                     <span class="text-lg font-bold text-purple-400">#${team.id}</span>
                                 </div>
                                 <div class="flex-1">
-                                    <h3 class="text-base font-bold text-white">Team ${team.id}</h3>
-                                    <p class="text-xs text-gray-400">${currentTournament.type} Tournament</p>
+                                    <h3 class="text-base font-bold text-white">${teamTitle}</h3>
+                                    <p class="text-xs text-gray-400">${subtitle}</p>
                                 </div>
                                 <div class="text-right">
                                     <div class="text-xs text-gray-400">Status</div>
@@ -501,38 +539,7 @@
                             
                             <!-- Players -->
                             <div class="space-y-3">
-                                <!-- Captain -->
-                                <div class="flex items-center gap-3 p-2 bg-yellow-500/10 rounded-lg border border-yellow-500/20">
-                                    <div class="w-8 h-8 rounded-full overflow-hidden border-2 border-yellow-500/50">
-                                        <img src="photos/${captainPhoto}" alt="${team.captain}" class="w-full h-full object-cover" onerror="this.src='placeholder-avatar.png'">
-                                    </div>
-                                    <div class="flex-1">
-                                        <div class="text-sm font-bold text-yellow-400">${team.captain}</div>
-                                        <div class="text-xs text-gray-400">Captain</div>
-                                    </div>
-                                </div>
-                                
-                                <!-- Player 2 -->
-                                <div class="flex items-center gap-3 p-2 bg-pink-500/10 rounded-lg border border-pink-500/20">
-                                    <div class="w-8 h-8 rounded-full overflow-hidden border-2 border-pink-500/50">
-                                        <img src="photos/${player2Photo}" alt="${team.player2}" class="w-full h-full object-cover" onerror="this.src='placeholder-avatar.png'">
-                                    </div>
-                                    <div class="flex-1">
-                                        <div class="text-sm font-bold text-pink-400">${team.player2}</div>
-                                        <div class="text-xs text-gray-400">Player 2</div>
-                                    </div>
-                                </div>
-                                
-                                <!-- Player 3 -->
-                                <div class="flex items-center gap-3 p-2 bg-blue-500/10 rounded-lg border border-blue-500/20">
-                                    <div class="w-8 h-8 rounded-full overflow-hidden border-2 border-blue-500/50">
-                                        <img src="photos/${player3Photo}" alt="${team.player3}" class="w-full h-full object-cover" onerror="this.src='placeholder-avatar.png'">
-                                    </div>
-                                    <div class="flex-1">
-                                        <div class="text-sm font-bold text-blue-400">${team.player3}</div>
-                                        <div class="text-xs text-gray-400">Player 3</div>
-                                    </div>
-                                </div>
+                                ${playersHTML}
                             </div>
                             
                             <!-- View Details Button -->

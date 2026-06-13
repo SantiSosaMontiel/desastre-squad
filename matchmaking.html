@@ -1,0 +1,492 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Matchmaking - Desastre Squad</title>
+    <link href="styles.css" rel="stylesheet">
+    <script src="config.js"></script>
+    <style>
+        /* Dropdown custom de equipos (independiente del Tailwind purgado) */
+        #team-dropdown { width: 100%; max-width: 20rem; }
+        #team-trigger:focus { outline: none; border-color: rgba(255,255,255,.22); box-shadow: none; }
+        #team-menu { z-index: 50; max-height: 18rem; overflow-y: auto; background: #1f2937; border: 1px solid rgba(255,255,255,.12); box-shadow: 0 20px 40px rgba(0,0,0,.55); }
+        #team-chevron { transition: transform .15s ease; }
+        #team-chevron.rotate-180 { transform: rotate(180deg); }
+        #team-menu .mm-group { padding: .5rem .75rem .25rem; font-size: 11px; font-weight: 600; text-transform: uppercase; letter-spacing: .05em; color: #6b7280; }
+        #team-menu .mm-option { width: 100%; text-align: left; padding: .5rem .75rem; font-size: .875rem; display: flex; align-items: center; justify-content: space-between; gap: .5rem; color: #e5e7eb; background: transparent; transition: background-color .12s ease; }
+        #team-menu .mm-option:hover { background: rgba(255,255,255,.10); }
+        #team-menu .mm-option.active { background: #dc2626; color: #fff; }
+        #team-menu .mm-option .mm-check { width: 1rem; height: 1rem; flex-shrink: 0; }
+
+        /* Calendario de disponibilidad */
+        .cal-grid { display: grid; grid-template-columns: repeat(7, 1fr); gap: 6px; }
+        .cal-wd { text-align: center; font-size: 11px; font-weight: 600; text-transform: uppercase; letter-spacing: .04em; color: #9ca3af; padding: 4px 0; }
+        .cal-cell { background: rgba(0,0,0,.22); border: 1px solid rgba(255,255,255,.06); border-radius: 10px; padding: 6px; min-height: 78px; display: flex; flex-direction: column; gap: 6px; }
+        .cal-cell.cal-out { background: transparent; border-color: transparent; }
+        .cal-cell.cal-past { opacity: .35; }
+        .cal-cell.cal-today { border-color: rgba(168,85,247,.55); }
+        .cal-daynum { font-size: 12px; font-weight: 700; color: #e5e7eb; line-height: 1; display: flex; align-items: center; justify-content: space-between; }
+        .cal-daynum .cal-dow { font-size: 10px; font-weight: 500; color: #9ca3af; }
+        .cal-slots { display: flex; gap: 4px; margin-top: auto; }
+        .cal-slot { flex: 1; border: none; cursor: pointer; border-radius: 6px; padding: 5px 0; font-size: 11px; font-weight: 700; line-height: 1; text-align: center; color: #cbd5e1; background: #374151; transition: background-color .12s ease, color .12s ease; }
+        .cal-slot:hover { background: #4b5563; }
+        .cal-slot.on { background: #16a34a; color: #fff; }
+        .cal-cell.cal-past .cal-slot { cursor: not-allowed; pointer-events: none; }
+        .cal-legend { display: flex; flex-wrap: wrap; gap: 10px; font-size: 11px; color: #9ca3af; margin-bottom: 10px; }
+        .cal-legend span { display: inline-flex; align-items: center; gap: 5px; }
+        .cal-legend i { width: 18px; height: 14px; border-radius: 4px; background: #374151; font-style: normal; font-size: 9px; font-weight: 700; color: #cbd5e1; display: inline-flex; align-items: center; justify-content: center; }
+        @media (max-width: 640px) {
+            .cal-cell { min-height: 64px; padding: 4px; }
+            .cal-slot { font-size: 9px; padding: 2px 3px; }
+        }
+    </style>
+</head>
+<body class="bg-gradient-to-br from-gray-900 via-purple-900 to-gray-900 min-h-screen text-white">
+    <div class="max-w-5xl mx-auto p-4 md:p-8">
+        <!-- Header -->
+        <div class="flex items-center justify-between mb-6 flex-wrap gap-4">
+            <div class="flex items-center gap-3">
+                <div class="w-10 h-10 bg-red-600 rounded-lg flex items-center justify-center">
+                    <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"></path>
+                    </svg>
+                </div>
+                <div>
+                    <h1 class="text-xl font-bold text-white">📅 Matchmaking</h1>
+                    <p id="tournament-name" class="text-xs text-gray-400">Cargando torneo...</p>
+                </div>
+            </div>
+            <a id="back-link" href="tournaments.html" class="flex items-center gap-2 px-4 py-2 bg-gray-600 hover:bg-gray-700 text-white rounded-lg transition-colors text-sm">
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"></path>
+                </svg>
+                <span>Volver al torneo</span>
+            </a>
+        </div>
+
+        <!-- Team selector -->
+        <div class="bg-white/5 rounded-xl border border-white/10 p-4 mb-6">
+            <label class="block text-sm font-medium text-gray-300 mb-2">Tu equipo</label>
+            <div id="team-dropdown" class="relative w-full md:w-96">
+                <button type="button" id="team-trigger" class="w-full flex items-center justify-between gap-2 bg-gray-800 border border-white/10 text-white rounded-lg px-3 py-2 hover:border-white/20 transition-colors">
+                    <span id="team-trigger-label" class="truncate text-gray-400">Elegí tu equipo...</span>
+                    <svg id="team-chevron" class="w-4 h-4 text-gray-400 shrink-0 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
+                    </svg>
+                </button>
+                <div id="team-menu" class="hidden absolute z-30 mt-2 w-full bg-gray-800 border border-white/10 rounded-lg shadow-2xl max-h-72 overflow-auto py-1">
+                </div>
+            </div>
+            <p class="text-xs text-gray-400 mt-2">Elegí tu equipo para cargar tus días/horarios disponibles. Los rivales se calculan dentro de tu mismo grupo.</p>
+        </div>
+
+        <!-- Loading / status -->
+        <div id="status" class="text-sm text-gray-400 mb-4 hidden"></div>
+
+        <!-- Availability (calendar, full width) -->
+        <div class="bg-white/5 rounded-xl border border-white/10 p-4 mb-6">
+            <h2 class="text-md font-semibold text-white mb-1">🗓️ Mi disponibilidad</h2>
+            <p class="text-xs text-gray-400 mb-3">Tocá las franjas en las que tu equipo puede jugar. Verde = disponible.</p>
+            <div class="cal-legend">
+                <span><i>T</i> Tarde 15–19h</span>
+                <span><i>N</i> Noche temprano 19–22h</span>
+                <span><i>M</i> Noche tarde 22–01h</span>
+            </div>
+            <div id="availability-grid">
+                <p class="text-sm text-gray-400">Elegí un equipo arriba para empezar.</p>
+            </div>
+        </div>
+
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+            <!-- Rivals -->
+            <div class="bg-white/5 rounded-xl border border-white/10 p-4">
+                <h2 class="text-md font-semibold text-white mb-1">⚔️ Posibles rivales</h2>
+                <p class="text-xs text-gray-400 mb-4">Equipos de tu grupo con días/horarios en común.</p>
+                <div id="rivals-list" class="space-y-3 max-h-[480px] overflow-auto pr-1">
+                    <p class="text-sm text-gray-400">--</p>
+                </div>
+            </div>
+
+            <!-- Confirmed matches -->
+            <div class="bg-white/5 rounded-xl border border-white/10 p-4">
+                <h2 class="text-md font-semibold text-white mb-1">✅ Partidos confirmados</h2>
+                <p class="text-xs text-gray-400 mb-4">Cruces ya acordados para este torneo.</p>
+                <div id="matches-list" class="space-y-3 max-h-[480px] overflow-auto pr-1">
+                    <p class="text-sm text-gray-400">Todavía no hay partidos confirmados.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const SB = window.SUPABASE_CONFIG;
+        const DAYS_AHEAD = 28;
+        const SLOTS = [
+            { id: 'tarde', label: 'Tarde', time: '15–19h', short: 'T' },
+            { id: 'noche_temprano', label: 'Noche temprano', time: '19–22h', short: 'N' },
+            { id: 'noche_tarde', label: 'Noche tarde', time: '22–01h', short: 'M' }
+        ];
+        const MESES = ['Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio', 'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre'];
+        const DIAS = ['Dom', 'Lun', 'Mar', 'Mié', 'Jue', 'Vie', 'Sáb'];
+
+        let tournamentId = null;
+        let tournamentData = null;
+        let teams = [];
+        let allAvailability = [];
+        let confirmedMatches = [];
+        let selectedTeamId = null;
+
+        // ---------- Supabase helpers ----------
+        function sbHeaders(extra) {
+            return Object.assign({ apikey: SB.key, Authorization: `Bearer ${SB.key}` }, extra || {});
+        }
+        async function sbGet(path) {
+            const r = await fetch(`${SB.url}/rest/v1/${path}`, { headers: sbHeaders() });
+            if (!r.ok) throw new Error(`GET ${path} -> ${r.status}`);
+            return r.json();
+        }
+        async function sbPost(table, body) {
+            const r = await fetch(`${SB.url}/rest/v1/${table}`, {
+                method: 'POST',
+                headers: sbHeaders({ 'Content-Type': 'application/json', Prefer: 'return=minimal' }),
+                body: JSON.stringify(body)
+            });
+            if (!r.ok) throw new Error(`POST ${table} -> ${r.status} ${await r.text()}`);
+        }
+        async function sbDelete(table, filter) {
+            const r = await fetch(`${SB.url}/rest/v1/${table}?${filter}`, { method: 'DELETE', headers: sbHeaders() });
+            if (!r.ok) throw new Error(`DELETE ${table} -> ${r.status}`);
+        }
+
+        // ---------- Date helpers ----------
+        function toISO(d) {
+            return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`;
+        }
+        function fmtDateISO(iso) {
+            const [y, m, d] = iso.split('-').map(Number);
+            const date = new Date(y, m - 1, d);
+            return `${DIAS[date.getDay()]} ${date.getDate()}/${date.getMonth() + 1}`;
+        }
+        function slotLabel(id) {
+            const s = SLOTS.find(s => s.id === id);
+            return s ? `${s.label} (${s.time})` : id;
+        }
+        function nextDates() {
+            const out = [];
+            const today = new Date();
+            today.setHours(0, 0, 0, 0);
+            for (let i = 0; i < DAYS_AHEAD; i++) {
+                const d = new Date(today);
+                d.setDate(today.getDate() + i);
+                out.push(toISO(d));
+            }
+            return out;
+        }
+
+        function getTeam(id) {
+            return teams.find(t => t.id === id);
+        }
+        function setStatus(msg, isError) {
+            const el = document.getElementById('status');
+            if (!msg) { el.classList.add('hidden'); return; }
+            el.classList.remove('hidden');
+            el.textContent = msg;
+            el.className = `text-sm mb-4 ${isError ? 'text-red-400' : 'text-gray-400'}`;
+        }
+
+        // ---------- Data loading ----------
+        async function loadTournament() {
+            const params = new URLSearchParams(window.location.search);
+            tournamentId = params.get('tournament') || '2v2-2024';
+            document.getElementById('back-link').href = `tournaments.html`;
+
+            const list = await (await fetch('tournaments-list.json')).json();
+            const entry = list.tournaments.find(t => t.id === tournamentId) || list.tournaments[0];
+            tournamentId = entry.id;
+            const data = await (await fetch(entry.data_file)).json();
+            tournamentData = data.tournament;
+            teams = tournamentData.teams;
+            document.getElementById('tournament-name').textContent = `${tournamentData.name} • ${tournamentData.type}`;
+        }
+
+        async function reloadData() {
+            allAvailability = await sbGet(`tournament_availability?tournament_id=eq.${encodeURIComponent(tournamentId)}&select=*`);
+            confirmedMatches = await sbGet(`tournament_matches?tournament_id=eq.${encodeURIComponent(tournamentId)}&select=*&order=date.asc`);
+        }
+
+        // ---------- Rendering ----------
+        function renderTeamSelect() {
+            const menu = document.getElementById('team-menu');
+            const groups = {};
+            teams.forEach(t => {
+                const g = t.group || '-';
+                (groups[g] = groups[g] || []).push(t);
+            });
+            let html = '';
+            Object.keys(groups).sort().forEach(g => {
+                const label = g === '-' ? 'Equipos' : `Grupo ${g}`;
+                html += `<div class="mm-group">${label}</div>`;
+                groups[g].forEach(t => {
+                    const name = t.name || ('Team ' + t.id);
+                    const active = t.id === selectedTeamId;
+                    html += `<button type="button" onclick="selectTeam(${t.id})" class="mm-option ${active ? 'active' : ''}">
+                        <span class="truncate">${name}</span>
+                        ${active ? '<svg class="mm-check" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg>' : ''}
+                    </button>`;
+                });
+            });
+            menu.innerHTML = html;
+            updateTriggerLabel();
+        }
+
+        function updateTriggerLabel() {
+            const label = document.getElementById('team-trigger-label');
+            const team = selectedTeamId ? getTeam(selectedTeamId) : null;
+            if (team) {
+                label.textContent = team.name || ('Team ' + team.id);
+                label.classList.remove('text-gray-400');
+                label.classList.add('text-white');
+            } else {
+                label.textContent = 'Elegí tu equipo...';
+                label.classList.add('text-gray-400');
+                label.classList.remove('text-white');
+            }
+        }
+
+        function setMenuOpen(open) {
+            const menu = document.getElementById('team-menu');
+            const chevron = document.getElementById('team-chevron');
+            menu.classList.toggle('hidden', !open);
+            chevron.classList.toggle('rotate-180', open);
+        }
+
+        function selectTeam(id) {
+            selectedTeamId = id;
+            localStorage.setItem(`mm_team_${tournamentId}`, id);
+            renderTeamSelect();
+            setMenuOpen(false);
+            renderAll();
+        }
+
+        function renderAvailability() {
+            const grid = document.getElementById('availability-grid');
+            if (!selectedTeamId) {
+                grid.innerHTML = '<p class="text-sm text-gray-400">Elegí un equipo arriba para empezar.</p>';
+                return;
+            }
+            const mine = new Set(
+                allAvailability.filter(a => a.team_id === selectedTeamId).map(a => `${a.date}|${a.slot}`)
+            );
+
+            const today = new Date();
+            today.setHours(0, 0, 0, 0);
+            const lastDay = new Date(today);
+            lastDay.setDate(today.getDate() + DAYS_AHEAD - 1);
+
+            // Arranca en el domingo de la semana actual y cubre hasta el fin de la última semana.
+            const start = new Date(today);
+            start.setDate(today.getDate() - today.getDay());
+            const totalDays = Math.ceil((today.getDay() + DAYS_AHEAD) / 7) * 7;
+
+            const wdHeader = DIAS.map(d => `<div class="cal-wd">${d}</div>`).join('');
+
+            let cells = '';
+            for (let i = 0; i < totalDays; i++) {
+                const d = new Date(start);
+                d.setDate(start.getDate() + i);
+                d.setHours(0, 0, 0, 0);
+                const iso = toISO(d);
+                const isPast = d < today;
+                const isOut = d > lastDay;
+                const isToday = d.getTime() === today.getTime();
+
+                if (isOut) {
+                    cells += '<div class="cal-cell cal-out"></div>';
+                    continue;
+                }
+                const slots = SLOTS.map(s => {
+                    const on = mine.has(`${iso}|${s.id}`);
+                    const click = isPast ? '' : `onclick="toggleSlot('${iso}','${s.id}')"`;
+                    return `<button class="cal-slot ${on ? 'on' : ''}" ${click} title="${s.label} ${s.time}">${s.short}</button>`;
+                }).join('');
+                cells += `<div class="cal-cell ${isPast ? 'cal-past' : ''} ${isToday ? 'cal-today' : ''}">
+                    <div class="cal-daynum"><span>${d.getDate()}</span><span class="cal-dow">${DIAS[d.getDay()]}</span></div>
+                    <div class="cal-slots">${slots}</div>
+                </div>`;
+            }
+
+            const monthLabel = `${MESES[today.getMonth()]}${lastDay.getMonth() !== today.getMonth() ? ' – ' + MESES[lastDay.getMonth()] : ''} ${lastDay.getFullYear()}`;
+            grid.innerHTML = `
+                <div class="text-sm font-semibold text-gray-200 mb-2">${monthLabel}</div>
+                <div class="cal-grid">${wdHeader}${cells}</div>`;
+        }
+
+        function computeRivals() {
+            const me = getTeam(selectedTeamId);
+            if (!me) return [];
+            const mySet = new Set(
+                allAvailability.filter(a => a.team_id === selectedTeamId).map(a => `${a.date}|${a.slot}`)
+            );
+            const rivals = [];
+            teams.forEach(t => {
+                if (t.id === selectedTeamId) return;
+                if (me.group && t.group && me.group !== t.group) return;
+                const overlaps = allAvailability
+                    .filter(a => a.team_id === t.id && mySet.has(`${a.date}|${a.slot}`))
+                    .map(a => ({ date: a.date, slot: a.slot }))
+                    .sort((x, y) => (x.date + x.slot).localeCompare(y.date + y.slot));
+                if (overlaps.length) rivals.push({ team: t, overlaps });
+            });
+            return rivals;
+        }
+
+        function isConfirmed(rivalId, date, slot) {
+            return confirmedMatches.some(m =>
+                m.date === date && m.slot === slot &&
+                ((m.team_a_id === selectedTeamId && m.team_b_id === rivalId) ||
+                 (m.team_a_id === rivalId && m.team_b_id === selectedTeamId)));
+        }
+
+        function renderRivals() {
+            const cont = document.getElementById('rivals-list');
+            if (!selectedTeamId) {
+                cont.innerHTML = '<p class="text-sm text-gray-400">Elegí tu equipo para ver rivales.</p>';
+                return;
+            }
+            const rivals = computeRivals();
+            if (!rivals.length) {
+                cont.innerHTML = '<p class="text-sm text-gray-400">Todavía no hay coincidencias. Cargá tu disponibilidad y esperá a que los rivales carguen la suya.</p>';
+                return;
+            }
+            cont.innerHTML = rivals.map(r => `
+                <div class="p-3 bg-black/20 rounded-lg border border-white/10">
+                    <div class="text-sm font-bold text-white mb-2">${r.team.name || ('Team ' + r.team.id)}</div>
+                    <div class="flex flex-col gap-1">
+                        ${r.overlaps.map(o => {
+                            const done = isConfirmed(r.team.id, o.date, o.slot);
+                            return `<div class="flex items-center justify-between gap-2 text-xs">
+                                <span class="text-gray-300">${fmtDateISO(o.date)} • ${slotLabel(o.slot)}</span>
+                                ${done
+                                    ? '<span class="text-green-400 font-medium">Confirmado ✓</span>'
+                                    : `<button onclick="confirmMatch(${r.team.id},'${o.date}','${o.slot}')" class="px-2 py-1 bg-red-600 hover:bg-red-700 rounded text-white font-medium">Confirmar</button>`}
+                            </div>`;
+                        }).join('')}
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        function renderMatches() {
+            const cont = document.getElementById('matches-list');
+            if (!confirmedMatches.length) {
+                cont.innerHTML = '<p class="text-sm text-gray-400">Todavía no hay partidos confirmados.</p>';
+                return;
+            }
+            cont.innerHTML = confirmedMatches.map(m => {
+                const a = getTeam(m.team_a_id);
+                const b = getTeam(m.team_b_id);
+                const aName = a ? (a.name || ('Team ' + a.id)) : ('Team ' + m.team_a_id);
+                const bName = b ? (b.name || ('Team ' + b.id)) : ('Team ' + m.team_b_id);
+                const grp = a && a.group ? `Grupo ${a.group}` : '';
+                return `
+                    <div class="flex items-center justify-between gap-3 p-3 bg-black/20 rounded-lg border border-green-500/20">
+                        <div>
+                            <div class="text-sm font-bold text-white">${aName} <span class="text-gray-500">vs</span> ${bName}</div>
+                            <div class="text-xs text-gray-400">${fmtDateISO(m.date)} • ${slotLabel(m.slot)} ${grp ? '• ' + grp : ''}</div>
+                        </div>
+                        <button onclick="removeMatch(${m.id})" title="Eliminar" class="text-gray-400 hover:text-red-400 transition-colors">
+                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+                            </svg>
+                        </button>
+                    </div>`;
+            }).join('');
+        }
+
+        function renderAll() {
+            renderAvailability();
+            renderRivals();
+            renderMatches();
+        }
+
+        // ---------- Actions ----------
+        async function toggleSlot(date, slot) {
+            if (!selectedTeamId) return;
+            const exists = allAvailability.find(a => a.team_id === selectedTeamId && a.date === date && a.slot === slot);
+            setStatus('Guardando...');
+            try {
+                if (exists) {
+                    await sbDelete('tournament_availability', `tournament_id=eq.${encodeURIComponent(tournamentId)}&team_id=eq.${selectedTeamId}&date=eq.${date}&slot=eq.${slot}`);
+                } else {
+                    await sbPost('tournament_availability', { tournament_id: tournamentId, team_id: selectedTeamId, date, slot });
+                }
+                await reloadData();
+                renderAll();
+                setStatus('');
+            } catch (e) {
+                console.error(e);
+                setStatus('Error guardando la disponibilidad. ¿Creaste las tablas en Supabase?', true);
+            }
+        }
+
+        async function confirmMatch(rivalId, date, slot) {
+            if (!selectedTeamId) return;
+            if (isConfirmed(rivalId, date, slot)) return;
+            setStatus('Confirmando...');
+            try {
+                await sbPost('tournament_matches', { tournament_id: tournamentId, team_a_id: selectedTeamId, team_b_id: rivalId, date, slot });
+                await reloadData();
+                renderAll();
+                setStatus('');
+            } catch (e) {
+                console.error(e);
+                setStatus('Error confirmando el partido.', true);
+            }
+        }
+
+        async function removeMatch(id) {
+            setStatus('Eliminando...');
+            try {
+                await sbDelete('tournament_matches', `id=eq.${id}`);
+                await reloadData();
+                renderAll();
+                setStatus('');
+            } catch (e) {
+                console.error(e);
+                setStatus('Error eliminando el partido.', true);
+            }
+        }
+
+        // ---------- Init ----------
+        document.getElementById('team-trigger').addEventListener('click', function (e) {
+            e.stopPropagation();
+            const isOpen = !document.getElementById('team-menu').classList.contains('hidden');
+            setMenuOpen(!isOpen);
+        });
+        document.addEventListener('click', function (e) {
+            if (!document.getElementById('team-dropdown').contains(e.target)) setMenuOpen(false);
+        });
+        document.addEventListener('keydown', function (e) {
+            if (e.key === 'Escape') setMenuOpen(false);
+        });
+
+        (async function init() {
+            try {
+                await loadTournament();
+                document.getElementById('back-link').href = `tournaments.html`;
+                const saved = localStorage.getItem(`mm_team_${tournamentId}`);
+                if (saved && teams.some(t => t.id === parseInt(saved))) {
+                    selectedTeamId = parseInt(saved);
+                }
+                renderTeamSelect();
+                await reloadData();
+                renderAll();
+            } catch (e) {
+                console.error(e);
+                setStatus('Error cargando el matchmaking. Revisá la consola.', true);
+            }
+        })();
+    </script>
+</body>
+</html>

@@ -1,0 +1,81 @@
+{
+  "tournament": {
+    "name": "Torneo 2v2 - El renacer de los muertos",
+    "type": "2v2",
+    "links": [
+      {
+        "name": "🏆 Cruces del Torneo",
+        "description": "Ver el bracket y resultados en Challonge",
+        "url": "https://challonge.com/es/sooq54b0",
+        "icon": "M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z",
+        "color": "bg-blue-500/20 text-blue-400"
+      }
+    ],
+    "teams": [
+      {
+        "id": 1,
+        "group": "A",
+        "name": "SoLid y Fran",
+        "captain": "SoLid",
+        "player2": "Fran Camet",
+        "status": "active"
+      },
+      {
+        "id": 2,
+        "group": "A",
+        "name": "Santi y Alejo",
+        "captain": "sszafranko",
+        "player2": "Alejo Camet",
+        "status": "active"
+      },
+      {
+        "id": 3,
+        "group": "A",
+        "name": "Reymon y Marco",
+        "captain": "Reymon",
+        "player2": "Marco Van Basten",
+        "status": "active"
+      },
+      {
+        "id": 4,
+        "group": "A",
+        "name": "Nomad y Luis",
+        "captain": "Nomadplayer",
+        "player2": "War Machine",
+        "status": "active"
+      },
+      {
+        "id": 5,
+        "group": "B",
+        "name": "Eze y Razor",
+        "captain": "Eze",
+        "player2": "TheRazor",
+        "status": "active"
+      },
+      {
+        "id": 6,
+        "group": "B",
+        "name": "Herno y Dylan",
+        "captain": "Herno",
+        "player2": "Dylan",
+        "status": "active"
+      },
+      {
+        "id": 7,
+        "group": "B",
+        "name": "Mariano y Lauri",
+        "captain": "Ze Pequeño",
+        "player2": "Lauritop",
+        "status": "active"
+      },
+      {
+        "id": 8,
+        "group": "B",
+        "name": "Chetti y Nasper",
+        "captain": "Chetti",
+        "player2": "Nasper",
+        "status": "active"
+      }
+    ]
+  }
+}
